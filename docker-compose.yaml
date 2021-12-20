@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+  rstudio:
+    image: rocker/verse
+    volumes:
+      - r_packages:/usr/local/lib/R/site-library
+      - ./:/home/rstudio
+    environment:
+      - DISABLE_AUTH=true
+    ports:
+      - 8787:8787
+
+volumes:
+  r_packages:
+    external: true
+    name: r_packages

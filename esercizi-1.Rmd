@@ -1,0 +1,233 @@
+---
+title: "esercizi di commento"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Compito del 1 febbraio 2017
+Consider the R commands below, describe what the two codes are intended to do and explain
+what is being calculated on each line. Here, simulated samples are generated from an exponential
+distribution with rate=1/5.
+
+### Codice n°1
+```{r eval=FALSE}
+N <- 10000
+set.seed(10)
+samp <- rexp(N,1/5)
+mean(samp)
+var(samp)
+sd(samp)
+```
+
+### Codice n°2
+```{r eval=FALSE}
+set.seed(10)
+repl<-10000
+n <- 10
+sampvar <- NULL
+variance <- NULL
+for (i in 1:repl) {
+  sam <- rexp(n,1/5)
+  sampvar <- c(sampvar,var(sam))
+  variance <- c(variance,var(sam)*9/10)
+}
+mean(sampvar)
+mean(variance)
+sd(sampvar)
+sd(variance)
+hist(sampvar)
+hist(variance)
+```
+
+## Compito del 13 febbraio 2017
+Consider the R commands below, describe what the two codes are intended to do and explain
+what is being calculated on each line. Here, the well-known dataset Advertising is taken into
+account.
+```{r eval=FALSE}
+Advertising<-read.csv(file="./data/Advertising.csv",header=TRUE)[,-1]
+```
+
+### Codice n°1
+```{r eval=FALSE}
+mod.adv <- lm(Sales~TV+Radio+Newspaper, Advertising)
+summary(mod.adv)
+summary(mod.adv)$sigma^2
+AIC(mod.adv)
+par(mfrow=c(2,2), pty="s", mar=c(3,2,3,2))
+plot(mod.adv)
+par(mfrow=c(1,1))
+```
+
+### Codice n°2
+```{r eval=FALSE}
+mod.adv1 <- lm(Sales~TV+Radio+I(TV^2)+TV:Radio, Advertising)
+summary(mod.adv1)
+summary(mod.adv1)$sigma^2
+AIC(mod.adv1)
+par(mfrow=c(2,2), pty="s", mar=c(3,2,3,2))
+plot(mod.adv1)
+par(mfrow=c(1,1))
+intc <- predict(mod.adv1, newdata=data.frame(TV=100,Radio=20),
+                interval="confidence")
+intp <- predict(mod.adv1, newdata=data.frame(TV=100,Radio=20),
+                interval="prediction")
+```
+
+## Compito del 15 febbraio 2018
+Consider the R commands below, describe what the code is intended to do and explain what
+is being calculated on each line. Finally, describe the R functions dbinom, pbinom, qbinom and
+rbinom.
+
+### Codice n°1
+```{r eval=FALSE}
+par(mfrow=c(2,2))
+xx<-seq(0,10,1)
+plot(xx,dbinom(xx,10,0.2),pch=19,ylim=c(0,0.5),
+      cex.axis=1.5,xlab=" ",ylab=" ",main="A) n=10, p=0.2") # Step 3
+segments(0,0,10,0,lwd=2)
+```
+
+### Codice n°2
+```{r eval=FALSE}
+plot(xx,dbinom(xx,10,0.5),pch=19,ylim=c(0,0.5),lwd=2,
+      cex.axis=1.5,xlab=" ",ylab=" ",main="B) n=10, p=0.5") # Step 3
+segments(0,0,10,0,lwd=2)
+```
+
+### Codice n°3
+```{r eval=FALSE}
+plot(xx,dbinom(xx,10,0.8),pch=19,ylim=c(0,0.5),lwd=2,
+      cex.axis=1.5,xlab=" ",ylab=" ",main="C) n=10, p=0.8") # Step 3
+segments(0,0,10,0,lwd=2)
+```
+
+### Codice n°4
+```{r eval=FALSE}
+xx<-seq(0,20,1)
+plot(xx,dbinom(xx,20,0.5),pch=19,ylim=c(0,0.5),lwd=2,
+      cex.axis=1.5,xlab=" ",ylab=" ",main="D) n=20, p=0.5") # Step 3
+segments(0,0,20,0,lwd=2)
+par(mfrow=c(1,1))
+```
+
+## Compito del 11 giugno 2018
+Write an R code to analyze the behavior of the sampling distribution of the sample variance, as
+the sample size increases. Consider 1000 simulated random samples of dimension 25, 50, 100 from
+a normal distribution with mean=1 and sd=1.
+```{r eval=FALSE}
+# Da inserire
+```
+
+## Compito del 4 febbraio 2019
+Consider the R commands below, describe what the three codes are intended to do and explain
+what is being calculated on each line. Here, the well-known dataset USArrest is taken into account
+and a Principal Component Analysis procedure is applied.
+
+### Codice n°1
+```{r eval=FALSE}
+obj <- princomp(USArrests, cor=TRUE)
+z1 <- -obj$scores[,1]
+z2 <- -obj$scores[,2]
+phi1<--obj$loadings[,1]
+phi2<--obj$loadings[,2]
+```
+
+### Codice n°2
+```{r eval=FALSE}
+obj$loadings<--obj$loadings
+obj$scores<--obj$scores
+biplot(obj, xlab="1st principal component", ylab="2nd principal component",
+        xlim=c(-3.5,3.5), col=c(1,2), scale=0)
+```
+
+### Codice n°3
+```{r eval=FALSE}
+par(mfrow=c(1,2), pty="s")
+plot(obj$sdev^2/4, xlab="Principal component", ylab="PVE", type='b')
+plot(cumsum(obj$sdev^2)/4, xlab="Principal component", ylab="Cumulative PVE",
+      ylim=c(0,1), type='b')
+par(mfrow=c(1,1))
+```
+
+## Compito del 21 febbraio 2019
+Describe the R functions that can be used for model selection. Furthermore, consider the R
+commands below, describe what the code is intended to do and explain what is being calculated
+on each line. Here, dataset trees, which provides some measurements on felled black cherry trees,
+is taken into account.
+
+```{r eval=FALSE}
+cv1 <- 0
+cv2 <- 0
+n <- length(trees$Volume)
+i <-1
+for (i in 1:n) {
+  mod1i <- lm(Volume ~ Girth, data = trees[-i,])
+  mod2i <- lm(Volume ~ Girth + Height, data = trees[-i,])
+  mu1 <- mod1i$coefficients[1] + mod1i$coefficients[2]*trees$Girth[i]
+  mu2 <- mod2i$coefficients[1] + mod2i$coefficients[2]*trees$Girth[i] +
+      mod2i$coefficients[3]*trees$Height[i]
+  sd1 <- sqrt(sum(mod1i$residuals^2)/(n-3))
+  sd2 <- sqrt(sum(mod2i$residuals^2)/(n-4))
+  cv1 <- cv1 - log(dnorm(trees$Volume[i],mu1,sd1))
+  cv2 <- cv2 - log(dnorm(trees$Volume[i],mu2,sd2))
+}
+cv1
+cv2
+```
+
+## Compito del 28 gennaio 2020
+Consider the R commands below, describe what the code is intended to do and explain what is
+being calculated on each line.
+
+### Codice n°1
+```{r eval=FALSE}
+set.seed(4)
+x <- seq(0,1.5,0.01)
+sim1<-rbinom(1000,25,0.25)/25
+sim2<-rbinom(1000,50,0.25)/50
+sim3<-rbinom(1000,100,0.25)/100
+```
+
+### Codice n°2
+```{r eval=FALSE}
+par(mfrow=c(1,3),pty="s")
+hist(sim1,freq=F,xlab="n=25",ylab=' ',main=' ')
+lines(x,dnorm(x,0.25,sqrt(0.25*0.75/10)),lwd=2,col='red')
+lines(density(sim1),lwd=2)
+hist(sim2,freq=F,xlab="n=50",ylab=' ',main=' ')
+lines(x,dnorm(x,0.25,sqrt(0.25*0.75/30)),lwd=2,col='red')
+lines(density(sim2),lwd=2)
+hist(sim3,freq=F,xlab="n=100",ylab=' ', main=' ')
+lines(x,dnorm(x,0.25,sqrt(0.25*0.75/100)),lwd=2,col='red')
+lines(density(sim3),lwd=2)
+par(mfrow=c(1,1))
+```
+
+## Compito del 18 febbraio 2020
+Describe the R functions that can be used for model selection. Furthermore, consider the R
+commands below, describe what the code is intended to do and explain what is being calculated
+on each line. Here, dataset trees, which provides some measurements on felled black cherry trees,
+is taken into account.
+```{r eval=FALSE}
+cv1 <- 0
+cv2 <- 0
+n <- length(trees$Volume)
+i <-1
+for (i in 1:n) {
+  mod1i <- lm(Volume ~ Girth, data = trees[-i,])
+  mod2i <- lm(Volume ~ Girth + Height, data = trees[-i,])
+  mu1 <- mod1i$coefficients[1] + mod1i$coefficients[2]*trees$Girth[i]
+  mu2 <- mod2i$coefficients[1] + mod2i$coefficients[2]*trees$Girth[i] +
+  mod2i$coefficients[3]*trees$Height[i]
+  sd1 <- sqrt(sum(mod1i$residuals^2)/(n-3))
+  sd2 <- sqrt(sum(mod2i$residuals^2)/(n-4))
+  cv1 <- cv1 - log(dnorm(trees$Volume[i],mu1,sd1))
+  cv2 <- cv2 - log(dnorm(trees$Volume[i],mu2,sd2))
+}
+cv1
+cv2
+```
+
