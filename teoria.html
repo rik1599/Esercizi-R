@@ -179,10 +179,16 @@ pre code {
 </div>
 <div id="define-the-multiple-linear-regression-model-and-highlight-the-basic-assumptions." class="section level3">
 <h3>Define the multiple linear regression model and highlight the basic assumptions.</h3>
+<p>In un modello di regressione lineare multiplo il valore della variabile risposta <span class="math inline">\(Y = (Y_1, \dots, Y_p)\)</span> dipende da due o più regressori <span class="math inline">\(X_1,\dots,X_p\)</span> definito come <span class="math display">\[ y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x{i_2} + \dots + \beta_p x_{ip} + \epsilon_i \]</span> Assunzioni del modello:</p>
+<ul>
+<li><p>I termini di errore sono <strong>normalmente distribuiti</strong> (<span class="math inline">\(\epsilon_i \sim N(0, \sigma^2)\)</span>) e indipendenti</p></li>
+<li><p>Le singole componenti della v.c. <span class="math inline">\(Y\)</span> sono indipendenti e normalmente distribuite, con varianza costante <span class="math inline">\(\sigma^2\)</span> e valore atteso <span class="math display">\[ E(Y_i) = \beta_0 + \beta_1 x_{i1} + \beta_2 x{i_2} + \dots + \beta_p x_{ip} \]</span></p></li>
+</ul>
 </div>
-<div id="describe-the-least-squares-estimators-for-the-regression-parameters-and-define-a-suitable-estimator-for-the-variance" class="section level3">
-<h3>Describe the least squares estimators for the regression parameters and define a suitable estimator for the variance</h3>
-<p>parameter.</p>
+<div id="describe-the-least-squares-estimators-for-the-regression-parameters-and-define-a-suitable-estimator-for-the-variance-parameter." class="section level3">
+<h3>Describe the least squares estimators for the regression parameters and define a suitable estimator for the variance parameter.</h3>
+<p>Il metodo dei minimi quadrati serve a stimare il valore dei parametri di regressione di un modello di regressione lineare semplice. <span class="math display">\[ \hat{\alpha} = \bar{y} - \hat{\beta}\bar{x}, \quad \hat{\beta} = \frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})}{\sum_{i=1}^{n} (x_i - \bar{x})^2} \]</span> <span class="math inline">\(\hat{\alpha}\)</span> e <span class="math inline">\(\hat{\beta}\)</span> sono stimatori consistenti e non distorti.</p>
+<p>Uno stimatore per la varianza è il <strong>residual standard error</strong> elevato al quadrato <span class="math display">\[\hat{\sigma^2} = \frac{\sum_{i=1}^n (y_i - \hat{\alpha} - \hat{\beta}x_i)^2}{n-2} \]</span></p>
 </div>
 <div id="discuss-the-usefulness-of-the-fitted-regression-model-for-inferential-and-prediction-purposes." class="section level3">
 <h3>Discuss the usefulness of the fitted regression model for inferential and prediction purposes.</h3>

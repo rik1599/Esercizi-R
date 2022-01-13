@@ -3,112 +3,115 @@ title: "Domande teoria"
 author: "Riccardo Belliato - Emanuele Lena"
 date: "12/19/2021"
 output: html_document
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-
 ## Compito del 1 febbraio 2017
+
 ### Describe what are the aims of Exploratory Data Analysis and present the main numerical summaries for bivariate data.
 
 
 ### Define the multiple linear regression model and highlight the basic assumptions.
 
+In un modello di regressione lineare multiplo il valore della variabile risposta $Y = (Y_1, \dots, Y_n)$ ($n$ è il numero di osservazioni) dipende da due o più regressori
+$X_1,\dots,X_p$ definito come
+$$ y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x{i_2} + \dots + \beta_p x_{ip} + \epsilon_i $$
+Assunzioni del modello:
 
-### Describe the least squares estimators for the regression parameters and define a suitable estimator for the variance
-parameter.
+-   I termini di errore sono **normalmente distribuiti**
+    ($\epsilon_i \sim N(0, \sigma^2)$) e gli errori delle singole unità sono indipendenti tra di loro
 
+-    Le singole variabili di risposta $Y_i$ sono:
+  * indipendenti
+  * normalmente distribuite
+  * con varianza costante $\sigma^2$
+  * valore medio definito come combinazione lineare dei regressori
+    $$ E(Y_i) = \beta_0 + \beta_1 x_{i1} + \beta_2 x{i_2} + \dots + \beta_p x_{ip} $$
+
+### Describe the least squares estimators for the regression parameters and define a suitable estimator for the variance parameter.
+
+Il metodo dei minimi quadrati serve a stimare il valore dei parametri di regressione per un modello di regressione lineare semplice. Minimizza la somma dei quadrati dei residui, ossia le differenze tra i dati osservati e i valori stimati dal modello.
+$$ \hat{\alpha} = \bar{y} - \hat{\beta}\bar{x}, \quad \hat{\beta} = \frac{\sigma_{xy}^2}{\sigma_x^2} = \frac{\frac{1}{n}\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})}{\frac{1}{n}\sum_{i=1}^{n} (x_i - \bar{x})^2} = \frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})}{\sum_{i=1}^{n} (x_i - \bar{x})^2}$$
+
+$\hat{\alpha}$ e $\hat{\beta}$ sono stimatori **consistenti** e **non distorti**.
+
+Uno stimatore per la varianza di $Y$ è il **residual standard error** elevato al quadrato, che consiste nella somma dei quadrati dei residui diviso il numero di osservazioni - 2 (i gradi di libertà).
+$$\hat{\sigma^2} = \frac{\sum_{i=1}^n (y_i - \hat{\alpha} - \hat{\beta}x_i)^2}{n-2} $$
 
 ### Discuss the usefulness of the fitted regression model for inferential and prediction purposes.
-
 
 ### Define the confidence intervals for both the regression parameters and the regression line and specify the prediction interval for a future response variable.
 
 ## Compito del 13 febbraio 2017
+
 ### Describe the purpose of an interval estimation procedure.
 
-
-### Give the right statistical interpretation of an observed 95\% confidence interval for an interest parameter.
-
+### Give the right statistical interpretation of an observed 95% confidence interval for an interest parameter.
 
 ### Present a simple application regarding the estimation of a population mean.
 
-
 ### List some useful steps in the model fitting procedure.
-
 
 ### Recall the main statistical indices and procedures for model assessment and model selection.
 
-
 ## Compito del 15 febbraio 2018
-### Describe the purpose of a point estimation procedure.
 
+### Describe the purpose of a point estimation procedure.
 
 ### List the main property of an estimator and define the standard error.
 
-
 ### Present a simple application regarding the estimation of a proportion.
-
 
 ### Define the one-way and the two-way analysis of variance models and highlight the basic assumptions.
 
-
 ### Describe the statistical tests on the main effects and on the interaction effect of the factors on the mean response.
 
-
 ## Compito del 11 giugno 2018
-### Present a simple application regarding the estimation of a population variance.
 
+### Present a simple application regarding the estimation of a population variance.
 
 ### Introduce and discuss the topic of regression models with non-Gaussian response variables.
 
-
 ### Consider the case of a Bernoulli distributed response and define the logistic regression model.
-
 
 ### With regard to a fitted logistic regression model, emphasize the interpretation of the estimated regression parameter and discuss its potential application for predicting a future binary response.
 
-
 ## Compito del 4 febbraio 2019
-### Define the Gaussian distribution and describe its usefulness in statistical applications.
 
+### Define the Gaussian distribution and describe its usefulness in statistical applications.
 
 ### Discuss the case in which the explanatory variables are factor, with particular regard to the codification using dummy variables.
 
-
 ### Consider the situation with both factors and numerical explanatory variables, focusing on the particular case of models admitting different simple regression lines.
 
-
 ## Compito del 21 febbraio 2019
+
 ### Present a simple application regarding the estimation of the difference of the means of two independent populations.
 
-
 ## Compito del 28 gennaio 2020
-### Describe the purpose of a (parametric) hypothesis testing procedure.
 
+### Describe the purpose of a (parametric) hypothesis testing procedure.
 
 ### Define the notions of significance level, critical region and p-value.
 
-
 ### Present a simple application concerning the testing on the equality of the means of two independent populations.
 
-
 ### Discuss the crucial point of selecting the explanatory variables in multiple linear regression models.
-
 
 ### Discuss the problem of multicollinearity and consider the potential remedies.
 
 ## Compito del 18 febbraio 2020
-### Describe what are the aims of Exploratory Data Analysis and present the main graphical summaries for describing the relationship between different types (namely, categorical and numerical) of variables.
 
+### Describe what are the aims of Exploratory Data Analysis and present the main graphical summaries for describing the relationship between different types (namely, categorical and numerical) of variables.
 
 ### Define the simple linear regression model and recall the t test on the nullity of the slope parameter, discussing its role in evaluating the model adequacy.
 
-
 ### Define the one-way analysis of variance model and describe the statistical test on the effect of the factor on the mean response
 
-
 ### Compare the regression model and the ANOVA model when the levels of the factor are quantitative.
-
