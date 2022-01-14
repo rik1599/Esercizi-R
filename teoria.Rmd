@@ -16,45 +16,89 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ### Describe what are the aims of Exploratory Data Analysis and present the main numerical summaries for bivariate data.
 
+Il principale scopo dell'analisi esplorativa è quello di visualizzare
+graficamente e numericamente il dataset a disposizione alla ricerca di
+pattern, idee e ipotesi da confermare attraverso le successive analisi
+formali o che inizialmente non erano state prese in considerazione.
+
+Principali indici per variabili bivariate:
+
+-   **covarianza (campionaria)** $s_{xy}$: misura la tendenza delle due
+    variabili $X$ e $Y$ ad esser in correlazione lineare. Se
+    $s_{xy} = 0$, allora non c'è alcuna correlazione lineare tra le due
+    variabili.
+
+-   **coefficiente di correlazione di Pearson**: misura di correlazione
+    lineare standardizzata $$ r_{xy} = \frac{s_{xy}}{s_x s_y} $$
+    $r_{xy} \in [-1, 1]$. Se \$ \|r\_{xy}\| \approx 1 \$ allora c'è una
+    forte correlazione lineare tra le variabili.
+
+-   **coefficiente di correlazione di rango di Spearman** e
+    **coefficente di correlazione $\tau$ di Kendall**: misurano la
+    correlazione non-lineare tra due variabili.
 
 ### Define the multiple linear regression model and highlight the basic assumptions.
 
-In un modello di regressione lineare multiplo il valore della variabile risposta $Y = (Y_1, \dots, Y_n)$ ($n$ è il numero di osservazioni) dipende da due o più regressori
-$X_1,\dots,X_p$ definito come
+In un modello di regressione lineare multiplo il valore della variabile
+risposta $Y = (Y_1, \dots, Y_n)$ ($n$ è il numero di osservazioni)
+dipende da due o più regressori $X_1,\dots,X_p$ definito come
 $$ y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x{i_2} + \dots + \beta_p x_{ip} + \epsilon_i $$
 Assunzioni del modello:
 
 -   I termini di errore sono **normalmente distribuiti**
-    ($\epsilon_i \sim N(0, \sigma^2)$) e gli errori delle singole unità sono indipendenti tra di loro
+    ($\epsilon_i \sim N(0, \sigma^2)$) e gli errori delle singole unità
+    sono indipendenti tra di loro
 
--    Le singole variabili di risposta $Y_i$ sono:
-  * indipendenti
-  * normalmente distribuite
-  * con varianza costante $\sigma^2$
-  * valore medio definito come combinazione lineare dei regressori
+-   Le singole variabili di risposta $Y_i$ sono:
+
+-   indipendenti
+
+-   normalmente distribuite
+
+-   con varianza costante $\sigma^2$
+
+-   valore medio definito come combinazione lineare dei regressori
     $$ E(Y_i) = \beta_0 + \beta_1 x_{i1} + \beta_2 x{i_2} + \dots + \beta_p x_{ip} $$
 
 ### Describe the least squares estimators for the regression parameters and define a suitable estimator for the variance parameter.
 
-Il metodo dei minimi quadrati serve a stimare il valore dei parametri di regressione per un modello di regressione lineare semplice. Minimizza la somma dei quadrati dei residui, ossia le differenze tra i dati osservati e i valori stimati dal modello.
-$$ \hat{\alpha} = \bar{y} - \hat{\beta}\bar{x}, \quad \hat{\beta} = \frac{\sigma_{xy}^2}{\sigma_x^2} = \frac{\frac{1}{n}\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})}{\frac{1}{n}\sum_{i=1}^{n} (x_i - \bar{x})^2} = \frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})}{\sum_{i=1}^{n} (x_i - \bar{x})^2}$$
+Il metodo dei minimi quadrati serve a stimare il valore dei parametri di
+regressione per un modello di regressione lineare semplice. Minimizza la
+somma dei quadrati dei residui, ossia le differenze tra i dati osservati
+e i valori stimati dal modello.
+$$ \hat{\alpha} = \bar{y} - \hat{\beta}\bar{x}, \quad \hat{\beta} = \frac{s_{xy}^2}{s_x^2} = \frac{\frac{1}{n-1}\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})}{\frac{1}{n-1}\sum_{i=1}^{n} (x_i - \bar{x})^2} = \frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})}{\sum_{i=1}^{n} (x_i - \bar{x})^2}$$
 
-$\hat{\alpha}$ e $\hat{\beta}$ sono stimatori **consistenti** e **non distorti**.
+$\hat{\alpha}$ e $\hat{\beta}$ sono stimatori **consistenti** e **non
+distorti**.
 
-Uno stimatore per la varianza di $Y$ è il **residual standard error** elevato al quadrato, che consiste nella somma dei quadrati dei residui diviso il numero di osservazioni - 2 (i gradi di libertà).
+Uno stimatore per la varianza di $Y$ è il **residual standard error**
+elevato al quadrato, che consiste nella somma dei quadrati dei residui
+diviso il numero di osservazioni - 2 (i gradi di libertà).
 $$\hat{\sigma^2} = \frac{\sum_{i=1}^n (y_i - \hat{\alpha} - \hat{\beta}x_i)^2}{n-2} $$
 
 ### Discuss the usefulness of the fitted regression model for inferential and prediction purposes.
+Nella statistica inferenziale i modelli di regressione servono a stimare la relazione $Y=f(X)$ sulla base dei dati a disposizione.  
+
+Nella statistica predittiva i modelli di regressione servono, dato un insieme di input, ad ottenere una stima (o un intervallo di stima) dei valori associati utilizzando un predittore, che può essere considerato una "black box"
 
 ### Define the confidence intervals for both the regression parameters and the regression line and specify the prediction interval for a future response variable.
+Dato un livello $\gamma$ di confidenza:
+-   $$ \alpha = [ \hat{\alpha} \pm t_{n-2,\frac{1-\gamma}{2}} SE(\hat{\alpha}) ] $$
+$t_{n-2}$ è la distribuzione t di Student con $n-2$ gradi di libertà, $SE(\cdot)$ lo standard error. 
+
+La formula è analoga per il parametro $\beta$ e il valore di una variabile di risposta futura $Y_0$
+
 
 ## Compito del 13 febbraio 2017
 
 ### Describe the purpose of an interval estimation procedure.
+Gli intervalli di confidenza offrono delle stime molto più accurate sul reale valore del parametro ricercato rispetto a una semplice stima puntuale.
 
 ### Give the right statistical interpretation of an observed 95% confidence interval for an interest parameter.
+Un osservazione di un intervallo casuale, basato su un campione statistico con probabilità del 95% che nell'intervallo di confidenza sia contenuto il reale valore del parametro.
 
 ### Present a simple application regarding the estimation of a population mean.
+
 
 ### List some useful steps in the model fitting procedure.
 

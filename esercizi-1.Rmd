@@ -15,11 +15,11 @@ distribution with rate=1/5.
 ### Codice n°1
 ```{r eval=FALSE}
 N <- 10000
-set.seed(10)
-samp <- rexp(N,1/5)
-mean(samp)
-var(samp)
-sd(samp)
+set.seed(10) #Imposta il seed per il generatore di numeri pseudo-casuale
+samp <- rexp(N,1/5)  #Estrae un campione di N numeri da una distribuzione esponenziale con lambda=1/5
+mean(samp) #calcola la media campionaria del campione estratto
+var(samp) #calcola la varianza campionaria corretta
+sd(samp) #calcola la deviazione standard campionaria corretta
 ```
 
 ### Codice n°2
@@ -30,17 +30,18 @@ n <- 10
 sampvar <- NULL
 variance <- NULL
 for (i in 1:repl) {
-  sam <- rexp(n,1/5)
-  sampvar <- c(sampvar,var(sam))
-  variance <- c(variance,var(sam)*9/10)
+  sam <- rexp(n,1/5) #campione di 10 numeri da una distribuzione esponenziale con lambda=1/5
+  sampvar <- c(sampvar,var(sam))  #vettore delle varianze campionarie corrette
+  variance <- c(variance,var(sam)*9/10) #vettore delle varianze campionarie
 }
-mean(sampvar)
+mean(sampvar) #media campionaria delle varianze, stima del valore della varianza di exp(1/5)
 mean(variance)
-sd(sampvar)
+sd(sampvar) #deviazione stadard campionaria corretta per la media
 sd(variance)
-hist(sampvar)
+hist(sampvar) #mostra istogramma con i possibili valori di sampvar sulle ascisse e la frequenza di questi valori nel vettore
 hist(variance)
 ```
+Questo codice serve a visualizzare la distribuzione della varianza campionaria e della varianza campionaria corretta e li confronta, in particolare per mostrare il fatto che la varianza campionaria tende a sottostimare la varianza delle distribuzioni rispetto a quella corretta (in questo caso 25).
 
 ## Compito del 13 febbraio 2017
 Consider the R commands below, describe what the two codes are intended to do and explain

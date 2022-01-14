@@ -24,7 +24,161 @@ help(mtcars)
 ```
 
 Describe how to perform a preliminary data analysis on this dataframe,
-using suitable R com- mands. After fitting the model
+using suitable R commands.
+
+```{r}
+newMtcars <- mtcars
+newMtcars$vs <- factor(mtcars$vs, labels = c("V-shaped", "straight"))
+newMtcars$am <- factor(mtcars$am, labels = c("automatic", "manual"))
+```
+
+Il dataset contiene una serie di dati su diversi modelli di automobili,
+tra cui i consumi di carburante (per miglio) e una serie di aspetti
+tecnici legati al design e alle performance dell'auto. Diamo un'occhiata
+alle variabili:
+
+```{r}
+summary(newMtcars)
+```
+
+Osservazioni:
+
+-   sono presenti 9 variabili numeriche e 2 categoriali,
+
+-   le variabili categoriali (vs e am) sono di tipo nominale,
+
+-   mpg, disp, hp, drat, wt e qsec sono di tipo continuo,
+
+-   cyl, gear e carb sono di tipo discreto (valori interi),
+
+mpg rappresenta i consumi del modello in miglia percorsi con un gallone
+di carburante. Per il significato delle altre variabili si suggerisce di
+consultare l'help.
+
+Supponendo che la nostra analisi sia focalizzata sullo studio dei
+consumi dei veicoli. Ora ci si concentra sulle caratteristiche della
+variabile mpg.
+
+Si parte da una panoramica sulla distribuzione di frequenza e dei
+quantili
+
+```{r}
+par(mfrow = c(1,2))
+hist(newMtcars$mpg, breaks = 10 + (0:10) * 2.4)
+hist(newMtcars$mpg, breaks = 10 + (0:10) * 2.4, probability = T)
+lines(density(newMtcars$mpg))
+abline(v=mean(newMtcars$mpg), col=2)
+abline(v=median(newMtcars$mpg), col=3)
+par(mfrow = c(1,1))
+boxplot(newMtcars$mpg, horizontal = T)
+```
+
+Osservazioni:
+
+-   la densità presenta un andamento simil-normale, con un picco
+    inferiore sia alla media che alla mediana, e un massimo locale sulla
+    coda destra, appesantendola di conseguenza,
+
+-   sia dagli istogrammi che dal boxplot si osserva una asimmetria,
+
+-   non si nota la presenza di particolari outlier,
+
+-   nonostante tutto, la media non è molto distante dalla mediana.
+
+```{r}
+library(moments)
+skewness(newMtcars$mpg)
+kurtosis(newMtcars$mpg)
+```
+
+Osservazioni:
+
+-   skewness abbastanza bassa, leggera asimmetria verso destra
+
+-   curtosi non troppo distante da 3, quindi la distribuzione è
+    leggermente di tipo iponormale
+
+Vista la particolare distribuzione dei dati si potrebbe considerare di
+partizionare il dataset in veicoli a basso consumo (mpg \< 25) e ad alto
+consumo (mpg $\leq$ 25), oppure considerare una trasformata della
+variabile (es. logaritmo)
+
+```{r}
+logMtcarsMpg <- log(newMtcars$mpg)
+summary(logMtcarsMpg)
+
+breaks <- 2 + (0:10) * 0.2
+par(mfrow = c(1,2))
+hist(logMtcarsMpg, breaks = breaks)
+hist(logMtcarsMpg, probability = T, breaks = breaks)
+lines(density(logMtcarsMpg))
+abline(v=mean(logMtcarsMpg), col=2)
+abline(v=median(logMtcarsMpg), col=3)
+par(mfrow = c(1,1))
+boxplot(logMtcarsMpg, horizontal = T)
+
+skewness(logMtcarsMpg)
+kurtosis(logMtcarsMpg)
+```
+
+Osservazioni:
+
+-   con il logaritmo si ottiene una maggiore simmetria del grafico, a
+    scapito di una leggera diminuzione dell'indice di curtosi
+
+Proviamo a ricercare delle ipotetiche correlazioni tra mpg e le altre
+variabili:
+
+### Variabili continue
+
+```{r}
+par(mfrow=c(2,3))
+for (i in c("disp", "hp", "drat", "wt", "qsec")) {
+  plot(newMtcars[, i], newMtcars$mpg, xlab = i, ylab = "mpg")
+  lines(lowess(newMtcars[, i], newMtcars$mpg), col=1)
+  abline(lm(newMtcars$mpg~newMtcars[, i]), col=2)
+}
+par(mfrow=c(1,1))
+```
+
+### Variabili discrete
+
+```{r}
+par(mfrow = c(1,3))
+boxplot(mpg~cyl, data = newMtcars)
+boxplot(mpg~gear, data = newMtcars)
+plot(mpg~carb, data = newMtcars)
+lines(lowess(newMtcars$carb, newMtcars$mpg), col=1)
+abline(lm(mpg~carb, data = newMtcars), col=2)
+par(mfrow = c(1,1))
+```
+
+### Variabili categoriali
+
+```{r}
+par(mfrow=c(1,2))
+boxplot(mpg~vs, data = newMtcars)
+boxplot(mpg~am, data = newMtcars)
+par(mfrow=c(1,1))
+```
+
+Dai grafici si può ipotizzare che:
+
+-   le variabili vs, arm e cyl sembrano avere una forte influenza su mpg
+
+-   per quanto riguarda qsec e drat la correlazione sembra essere
+    presente ma è molto leggera
+
+-   per quanto riguarda wt, disp e hp sembra esserci una correlazione,
+    ma non è detto che sia di tipo lineare
+
+```{r}
+cor.test(x = newMtcars$wt, y = newMtcars$mpg, method = "pearson")
+cor.test(x = newMtcars$disp, y = newMtcars$mpg, method = "pearson")
+cor.test(x = newMtcars$hp, y = newMtcars$mpg, method = "pearson")
+```
+
+After fitting the model
 `fit <- lm(mpg ∼ disp + hp + wt + drat, data=mtcars)`, the following
 outputs are obtained by the R commands `summary(fit)` and `plot(fit)`,
 respectively.
@@ -172,12 +326,12 @@ below and the output of the `str` command is given
 | A data frame with 3294 observations on the following 4 variables.
 | exper
 |    experience in years
-| male 
-|   1 male, 0 female 
-| school 
-|    years of schooling 
+| male
+|   1 male, 0 female
+| school
+|    years of schooling
 | wage
-|    wage (in 1980\$) per hour 
+|    wage (in 1980\$) per hour
 | region
 |    Center, North, South
 
