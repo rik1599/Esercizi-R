@@ -165,12 +165,10 @@ par(mfrow=c(1,1))
 Dai grafici si può ipotizzare che:
 
 -   le variabili vs, arm e cyl sembrano avere una forte influenza su mpg
-
 -   per quanto riguarda qsec e drat la correlazione sembra essere
     presente ma è molto leggera
-
 -   per quanto riguarda wt, disp e hp sembra esserci una correlazione,
-    ma non è detto che sia di tipo lineare
+    ma non è detto che sia di tipo lineare.
 
 ```{r}
 cor(x = newMtcars$wt, y = newMtcars$mpg, method = "pearson")
@@ -179,9 +177,11 @@ cor(x = newMtcars$hp, y = newMtcars$mpg, method = "pearson")
 cor(x = newMtcars$hp, y = newMtcars$mpg, method = "spearman")
 ```
 
-Per wt e disp c'è una correlazione lineare (negativa) abbastanza forte.
-Per quanto riguarda hp, la relazione lineare c'è ma è più bassa, tuttavia il coefficiente di spearman conferma l'esistenza di una correlazione.
-Proviamo a trasformare hp
+Gli indici di correlazione di pearson confermano la presenza di correlazioni lineari negative (discrete) per wt e disp. Per quanto riguarda hp, la relazione lineare c'è ma è meno significativa, tuttavia il coefficiente di spearman conferma l'esistenza di una correlazione.
+
+A seguito di quanto visto anche dai grafici, proviamo a considerare una trasformazione di hp per cercare una correlazione migliore. 
+
+
 ```{r}
 par(mfrow=(c(1,2)))
 plot(newMtcars$hp, newMtcars$mpg, xlab = "hp", ylab = "mpg")
@@ -193,7 +193,9 @@ lines(lowess(1/newMtcars$hp, newMtcars$mpg), col=1)
 abline(lm(newMtcars$mpg~I(1/newMtcars$hp)), col=2)
 par(mfrow=(c(1,1)))
 ```
-Sembra esserci una buona correlazione lineare tra mpg e il reciproco di hp
+
+Sembra esserci una buona correlazione lineare tra mpg e il reciproco di hp.
+
 ```{r}
 cor(x = newMtcars$mpg, y = 1/newMtcars$hp, method = "pearson")
 ```
@@ -233,6 +235,14 @@ par(mfrow = c(2,2))
 plot(fit)
 par(mfrow=c(1,1))
 ```
+
+Oss. 
+
+- Dal primo grafico, si osserva che la varianza dei residui non è costante. In particolare, per alcuni valori estremi si riscontrano residui significativi (che risultano tali anche quando standardizzati)
+
+- Il secondo grafico evidenzia che i residui standardizzati si discostano significativamente dai quantili teorici per i valori non centrali. Questo, assieme a quanto emerso dal primo grafico, potrebbe suggerire che sarebbe appropriato valutare modelli più complessi, oppure di non considerare le osservazioni con mpg troppo elevato
+
+- Dal quargo grafico si osserva un effetto leva non necessariamente corrispondente ad un alto residuo. Le distanze di cook sono contenute. 
 
 
 ## Compito del 13 febbraio 2017
