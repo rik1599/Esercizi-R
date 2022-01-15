@@ -173,24 +173,67 @@ Dai grafici si può ipotizzare che:
     ma non è detto che sia di tipo lineare
 
 ```{r}
-cor.test(x = newMtcars$wt, y = newMtcars$mpg, method = "pearson")
-cor.test(x = newMtcars$disp, y = newMtcars$mpg, method = "pearson")
-cor.test(x = newMtcars$hp, y = newMtcars$mpg, method = "pearson")
+cor(x = newMtcars$wt, y = newMtcars$mpg, method = "pearson")
+cor(x = newMtcars$disp, y = newMtcars$mpg, method = "pearson")
+cor(x = newMtcars$hp, y = newMtcars$mpg, method = "pearson")
+cor(x = newMtcars$hp, y = newMtcars$mpg, method = "spearman")
 ```
+
+Per wt e disp c'è una correlazione lineare (negativa) abbastanza forte.
+Per quanto riguarda hp, la relazione lineare c'è ma è più bassa, tuttavia il coefficiente di spearman conferma l'esistenza di una correlazione.
+Proviamo a trasformare hp
+```{r}
+par(mfrow=(c(1,2)))
+plot(newMtcars$hp, newMtcars$mpg, xlab = "hp", ylab = "mpg")
+lines(lowess(newMtcars$hp, newMtcars$mpg), col=1)
+abline(lm(newMtcars$mpg~newMtcars$hp), col=2)
+
+plot(1/newMtcars$hp, newMtcars$mpg, xlab = "1/hp", ylab = "mpg")
+lines(lowess(1/newMtcars$hp, newMtcars$mpg), col=1)
+abline(lm(newMtcars$mpg~I(1/newMtcars$hp)), col=2)
+par(mfrow=(c(1,1)))
+```
+Sembra esserci una buona correlazione lineare tra mpg e il reciproco di hp
+```{r}
+cor(x = newMtcars$mpg, y = 1/newMtcars$hp, method = "pearson")
+```
+
 
 After fitting the model
 `fit <- lm(mpg ∼ disp + hp + wt + drat, data=mtcars)`, the following
 outputs are obtained by the R commands `summary(fit)` and `plot(fit)`,
 respectively.
+Describe how to interpret these results, and then suggest how to proceed
+with further analyses.
 
 ```{r echo=FALSE}
 fit <- lm(mpg ~ disp + hp + wt + drat, data=mtcars)
 summary(fit)
+```
+### Osservazioni
+-   Modello su quattro regressori continui
+
+-   si nota l'intercetta molto elevata e ha il p-value più basso
+
+-   il regressore disp ha un p-value elevato (ca. 72%), quindi la sua influenza sul risultato è ininfluente
+
+-   analogo discorso vale per drat (p-value ca. 19%)
+
+-   hp e wt risultano essere i regressori più influenti all'interno del modello, entrambi negativi e con p-value abbastanza bassi da tenerli nel            modello.
+
+-   si osserva che i coefficienti di wt, drat e l'intercetta sono molto più elevati rispetto agli altri coefficienti.
+    potrebbe indicare la necessità di normalizzare i dati per gestire meglio la diversità delle scale di ciascuna variabile
+    
+-   dagli indici $R^2$ concludiamo che copriamo abbastanza bene la variabilità della variabile risposta con il modello
+
+-   il risultato del test F conferma quanto detto in precedenza
+
+```{r}
+par(mfrow = c(2,2))
 plot(fit)
+par(mfrow=c(1,1))
 ```
 
-Describe how to interpret these results, and then suggest how to proceed
-with further analyses.
 
 ## Compito del 13 febbraio 2017
 
