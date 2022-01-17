@@ -240,9 +240,28 @@ Oss.
 
 - Dal primo grafico, si osserva che la varianza dei residui non è costante. In particolare, per alcuni valori estremi si riscontrano residui significativi (che risultano tali anche quando standardizzati)
 
-- Il secondo grafico evidenzia che i residui standardizzati si discostano significativamente dai quantili teorici per i valori non centrali. Questo, assieme a quanto emerso dal primo grafico, potrebbe suggerire che sarebbe appropriato valutare modelli più complessi, oppure di non considerare le osservazioni con mpg troppo elevato
+- Il secondo grafico evidenzia che i residui standardizzati si discostano significativamente dai quantili teorici per i valori non centrali.
 
-- Dal quargo grafico si osserva un effetto leva non necessariamente corrispondente ad un alto residuo. Le distanze di cook sono contenute. 
+- Dal quarto grafico si osserva un effetto leva non necessariamente corrispondente ad un alto residuo. Le distanze di cook sono contenute, quindi si può affermare che nessun punto è particolarmente influente (ci sono un paio di punti vicini alla soglia del 0.5).
+
+Da tali diagnostiche, assieme a quanto emerso dal primo grafico, si osserva che sarebbe appropriato valutare modelli più complessi, magari che escludano i predittori che ottenuto un p-value alto nei test sui coefficenti e che considerino trasformate di alcuni regressori (come ad esempio 1/hp invece di hp).
+
+In alternativa, potrebbe essere utile indagare ulteriormente sui punti segnalati dalle diagnostiche e valutare di rimuoverli dal modello.
+
+
+```{r}
+summary(fit$model$mpg)
+summary(fit$model$hp)
+summary(fit$model$wt)
+
+```
+
+
+```{r}
+fit$model[c("Toyota Corolla", "Chrysler Imperial", "Maserati Bora", "Fiat 128"), ]
+```
+
+Si osserva ad esempio che l'oss. "Toyota Corolla" risulta avere un valore estremo per mpg (il massimo), e risulta anche essere nel primo quartile per quanto riguarda le variabili hp e wt. 
 
 
 ## Compito del 13 febbraio 2017
@@ -255,7 +274,7 @@ help file and the output of the str command are given below
 ```{r, echo=FALSE, printr.help.sections="format"}
 library(ISwR)
 help(bp.obese)
-str(bp.obese)
+summary(bp.obese)
 ```
 
 The aim of the study is to analyze the potential relationship between
@@ -265,6 +284,159 @@ preliminary data analysis on this dataframe, using suitable R commands
 and comment the following plot.
 
 ![](img/img1.png)
+
+
+Il seguente plot mette il relazione la variabile obesità con la variabile bp, tenendo conto anche del fattore sesso (che viene riportato attraverso il colore dei punti sul plot). 
+
+Si osserva che ai punti si sovrappongono anche due rette di regressione (una per il fattore maschio, una per il fattore femmina). Se si dovesse effettuare qualche considerazione molto generale, si può dire che a colpo d'occhio si nota che:
+
+* tutti i valori più estremi per la variabile obesità sono femmine, mentre per quanto riguarda la variabile bp non ci sono grosse differenze (anche se i maschi tendono ad avere un valore un po' più elevato)
+* la retta di regressione per i maschi mostra come essi tendono - di base - ad avere bp elevata anche a fronte di non obesità; al contrario, la retta relativa alle femmine ha un intercetta più bassa ma anche una pendenza (leggermente) più elevata. Ciò sembra indicare che il fattore obesità sia più rilevante per le femmine
+* attenzione però, questa affermazione potrebbe essere affrettata, in quanto nei nostri dati non abbiamo osservazioni relative a maschi fortemente obesi e pertanto non abbiamo una visione completa.
+
+
+### Analisi preliminare
+
+Partiamo con una panoramica rapida del dataset.
+
+```{r}
+help(bp.obese)
+summary(bp.obese)
+```
+
+Il dataset è costituito da tre variabili, due numeriche continue (obese e bp) e una categoriale non ordinale (sex). 
+
+Trasformiamo la variabile categoriale in un fattore.
+
+```{r}
+bp.obese2 <- bp.obese
+bp.obese2$sex <- factor(bp.obese$sex, labels = c("male", "female"))
+summary(bp.obese2)
+
+```
+
+
+
+```{r}
+# breaks <- 2 + (0:10) * 0.2
+par(mfrow = c(1,2))
+hist(bp.obese2$bp) # , breaks = breaks)
+hist(bp.obese2$bp, probability = T, ylim=c(0, 0.025)) #, breaks = breaks)
+lines(density(bp.obese2$bp))
+abline(v=mean(bp.obese2$bp), col="red")
+abline(v=median(bp.obese2$bp), col="green")
+par(mfrow = c(1,1))
+```
+
+```{r}
+boxplot(bp.obese2$bp, horizontal = T)
+```
+
+Per quanto riguarda la variabile bp si osserva una distribuzione simil normale, ma caratterizzata da una grande concentrazione di osservazioni per le classi centrali e da un'apparente assimetria verso sinistra. La media risulta maggiore rispetto alla mediana, probabilmente questo è causato da alcuni outlyer e più in generale da una coda lunga a destra. 
+
+```{r}
+par(mfrow = c(1,2))
+hist(bp.obese2$obese) # , breaks = breaks)
+hist(bp.obese2$obese, probability = T,) #, breaks = breaks)
+lines(density(bp.obese2$obese))
+abline(v=mean(bp.obese2$obese), col="red")
+abline(v=median(bp.obese2$obese), col="green")
+par(mfrow = c(1,1))
+```
+
+
+```{r}
+boxplot(bp.obese2$obese, horizontal = T)
+```
+
+La variabile obese invece nel suo complesso risulta più simmetrica, se non fosse per pochi outlyer (che tra l'altro, come si è visto dal plot fornito all'inizio sono tutte oss. relative al fattore femmina, pertanto potrebbero portare ad un bias).
+
+```{r}
+library(moments)
+skewness(bp.obese2$obese)
+kurtosis(bp.obese2$obese)
+
+skewness(bp.obese2$bp)
+kurtosis(bp.obese2$bp)
+```
+
+In entrambi i casi, gli indici riportano un'elevata curtosi (>3, leptocurtosi, la campana risulta stretta) e un'assimetria destra (probabilmente dovuta agli outlyer). Visto che ci interessa la normalità di bp, proviamo a rimuovere gli outlyer
+
+```{r}
+
+bp.obese3 <- bp.obese2[bp.obese2$bp<=180, ]
+
+summary(bp.obese3$bp)
+skewness(bp.obese3$bp)
+kurtosis(bp.obese3$bp)
+
+hist(bp.obese3$bp, probability = T) #, breaks = breaks)
+lines(density(bp.obese3$bp))
+abline(v=mean(bp.obese3$bp), col="red")
+abline(v=median(bp.obese3$bp), col="green")
+
+```
+
+Si osserva dagli indici che ciò migliora molto sia l'indice di di simmetria che di curtosi. Per il momento proseguiamo l'analisi con i dati completi, ma teniamo aperta la possibilità di rimuovere gli outlyer se riscontriamo problematiche con il modello.
+
+Infine, per quanto riguarda la variabile sex già dal summary si nota che abbiamo leggermente più osservazioni per il livello femmina.
+
+
+Proviamo ora a mettere in relazione le tre variabili tra di loro:
+
+```{r}
+
+par(mfrow=c(1,3))
+
+plot(bp.obese2$obese, bp.obese2$bp)
+lines(lowess(bp.obese2$obese, bp.obese2$bp), col=1)
+abline(lm(bp~obese, data = bp.obese2), col=2)
+
+boxplot(bp~sex, data = bp.obese2)
+
+boxplot(obese~sex, data = bp.obese2)
+
+par(mfrow=c(1,3))
+```
+
+Dal primo grafico, si osserva una vaga correlazione lineare tra obese e bp. Detto ciò, si osserva anche che tale correlazione sembra essere piuttosto debole, vista l'alta variabilità di bp.
+
+```{r}
+cor(bp.obese2$obese, bp.obese2$bp, method = "pearson")
+```
+
+Il bassisimo coefficente di correlazione di Pearson sostiene questa teoria.
+
+Per quanto riguarda la relazione tra tra sex e bp, si osserva che:
+
+* i maschi presentano una bp meno variabile rispetto alle femmine
+
+```{r}
+mean(bp.obese2[bp.obese2$sex=="male", "bp"])
+mean(bp.obese2[bp.obese2$sex=="female", "bp"])
+var(bp.obese2[bp.obese2$sex=="male", "bp"])
+var(bp.obese2[bp.obese2$sex=="female", "bp"])
+```
+* seppur dal plot iniziale sembra che i valori dei maschi siano più alti di quelli delle femmine, non è così tanto vero (come si può osservare dal boxplot e dalla media)
+
+* i valori estremi riguardano ambo i sessi
+
+* considerazioni simili si possono effettuare anche escludendo gli outlyer più significativi
+
+```{r}
+mean(bp.obese3[bp.obese3$sex=="male", "bp"])
+mean(bp.obese3[bp.obese3$sex=="female", "bp"])
+var(bp.obese3[bp.obese3$sex=="male", "bp"])
+var(bp.obese3[bp.obese3$sex=="female", "bp"])
+```
+
+
+Infine, nel dataset preso in esame, le osservazioni con alto indice di obesità tendono ad essere soprattutto donne. E' bene tenere in considerazione questo fattore per l'analisi formale successiva, onde evitare di creare bias.
+
+
+
+
+
 
 After fitting these linear models
 `fit1 <- lm(bp ∼ obese,data=bp.obese)`,
