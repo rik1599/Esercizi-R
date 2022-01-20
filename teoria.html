@@ -177,7 +177,12 @@ pre code {
 <div id="describe-what-are-the-aims-of-exploratory-data-analysis-and-present-the-main-numerical-summaries-for-bivariate-data." class="section level3">
 <h3>Describe what are the aims of Exploratory Data Analysis and present the main numerical summaries for bivariate data.</h3>
 <p>Il principale scopo dell’analisi esplorativa è quello di visualizzare graficamente e numericamente il dataset a disposizione alla ricerca di pattern, idee e ipotesi da confermare attraverso le successive analisi formali o che inizialmente non erano state prese in considerazione.</p>
-<p>Principali indici per variabili bivariate: * covarianza (campionaria) <span class="math inline">\(s_{xy}\)</span>: misura la tendenza delle due variabili <span class="math inline">\(X\)</span> e <span class="math inline">\(Y\)</span> ad esser in correlazione lineare. Se <span class="math inline">\(s_{xy} = 0\)</span>, allora non c’è alcuna correlazione lineare tra le due variabili. * coefficiente di correlazione di Pearson: misura di correlazione lineare standardizzata <span class="math display">\[ r_{xy} = \frac{s_{xy}}{s_x s_y} \]</span></p>
+<p>Principali indici per variabili bivariate:</p>
+<ul>
+<li><p><strong>covarianza (campionaria)</strong> <span class="math inline">\(s_{xy}\)</span>: misura la tendenza delle due variabili <span class="math inline">\(X\)</span> e <span class="math inline">\(Y\)</span> ad esser in correlazione lineare. Se <span class="math inline">\(s_{xy} = 0\)</span>, allora non c’è alcuna correlazione lineare tra le due variabili.</p></li>
+<li><p><strong>coefficiente di correlazione di Pearson</strong>: misura di correlazione lineare standardizzata <span class="math display">\[ r_{xy} = \frac{s_{xy}}{s_x s_y} \]</span> <span class="math inline">\(r_{xy} \in [-1, 1]\)</span>. Se <span class="math inline">\(|r\_{xy}| \approx 1\)</span> allora c’è una forte correlazione lineare tra le variabili.</p></li>
+<li><p><strong>coefficiente di correlazione di rango di Spearman</strong> e <strong>coefficente di correlazione <span class="math inline">\(\tau\)</span> di Kendall</strong>: misurano la correlazione non-lineare tra due variabili.</p></li>
+</ul>
 </div>
 <div id="define-the-multiple-linear-regression-model-and-highlight-the-basic-assumptions." class="section level3">
 <h3>Define the multiple linear regression model and highlight the basic assumptions.</h3>
@@ -199,27 +204,64 @@ pre code {
 </div>
 <div id="discuss-the-usefulness-of-the-fitted-regression-model-for-inferential-and-prediction-purposes." class="section level3">
 <h3>Discuss the usefulness of the fitted regression model for inferential and prediction purposes.</h3>
+<p>Nella statistica inferenziale i modelli di regressione servono a stimare la relazione <span class="math inline">\(Y=f(X)\)</span> sulla base dei dati a disposizione.</p>
+<p>Nella statistica predittiva i modelli di regressione servono, dato un insieme di input, ad ottenere una stima (o un intervallo di stima) dei valori associati utilizzando un predittore, che può essere considerato una “black box”</p>
 </div>
 <div id="define-the-confidence-intervals-for-both-the-regression-parameters-and-the-regression-line-and-specify-the-prediction-interval-for-a-future-response-variable." class="section level3">
 <h3>Define the confidence intervals for both the regression parameters and the regression line and specify the prediction interval for a future response variable.</h3>
+<p>Dato un livello <span class="math inline">\(\gamma\)</span> di confidenza: - <span class="math display">\[ \alpha = [ \hat{\alpha} \pm t_{n-2,\frac{1-\gamma}{2}} SE(\hat{\alpha}) ] \]</span> <span class="math inline">\(t_{n-2}\)</span> è la distribuzione t di Student con <span class="math inline">\(n-2\)</span> gradi di libertà, <span class="math inline">\(SE(\cdot)\)</span> lo standard error.</p>
+<p>La formula è analoga per il parametro <span class="math inline">\(\beta\)</span> e il valore di una variabile di risposta futura <span class="math inline">\(Y_0\)</span></p>
 </div>
 </div>
 <div id="compito-del-13-febbraio-2017" class="section level2">
 <h2>Compito del 13 febbraio 2017</h2>
 <div id="describe-the-purpose-of-an-interval-estimation-procedure." class="section level3">
 <h3>Describe the purpose of an interval estimation procedure.</h3>
+<p>Gli intervalli di confidenza offrono delle stime molto più accurate sul reale valore del parametro ricercato rispetto a una semplice stima puntuale.</p>
 </div>
 <div id="give-the-right-statistical-interpretation-of-an-observed-95-confidence-interval-for-an-interest-parameter." class="section level3">
 <h3>Give the right statistical interpretation of an observed 95% confidence interval for an interest parameter.</h3>
+<p>Un osservazione di un intervallo casuale, basato su un campione statistico con probabilità del 95% che nell’intervallo di confidenza sia contenuto il reale valore del parametro.</p>
 </div>
 <div id="present-a-simple-application-regarding-the-estimation-of-a-population-mean." class="section level3">
 <h3>Present a simple application regarding the estimation of a population mean.</h3>
+<p>Da un data set di <span class="math inline">\(n\)</span> osservazioni su una variabile <span class="math inline">\(y\)</span> di interesse. Da queste osservazioni calcolo:</p>
+<ul>
+<li><p>media campionaria <span class="math inline">\(\bar{y}\)</span></p></li>
+<li><p>mediana <span class="math inline">\(y_{0.5}\)</span></p></li>
+<li><p>varianza campionaria (corretta) <span class="math inline">\(S^2\)</span></p></li>
+<li><p>deviazione standard <span class="math inline">\(S = \sqrt{S^2}\)</span></p></li>
+<li><p>mean square error <span class="math inline">\(SEM = \frac{S}{\sqrt{n}}\)</span></p></li>
+</ul>
+<p>Dato un livello di confidenza <span class="math inline">\(\alpha\)</span> l’intervallo di confidenza per <span class="math inline">\(\bar{y}\)</span> sarà <span class="math display">\[ [ \bar{y} \pm t(n-1)_{\frac{1-\alpha}{2}}SEM] \]</span></p>
 </div>
 <div id="list-some-useful-steps-in-the-model-fitting-procedure." class="section level3">
 <h3>List some useful steps in the model fitting procedure.</h3>
+<ol style="list-style-type: decimal">
+<li><p>Esamina la distribuzione delle variabili esplicative e della variabile risposta. Cerca distribuzioni asimmetriche e gli outlyers.</p></li>
+<li><p>Esamina gli scatterplot di tutte le variabili esplicative e della variabile risposta.</p></li>
+<li><p>Notare gli intervalli di ciascuna delle variabili del grafico a dispersione, considerando se variano sufficientemente per influenzare la variabile di risposta e se ciascuna delle variabili esplicative è misurata accuratamente.</p></li>
+<li><p>Nel caso in cui uno scatterplot suggerisca dei pattern non lineari, considera l’uso di trasformate</p></li>
+<li><p>In caso di distribuzioni asimmetriche si consiglia di traformare la variabile risposta</p></li>
+<li><p>Le coppie di variabili esplicative con un’alta correlazione tali da sembrare fornire le stesse informazioni dovrebbero essere analizzati. Le informazioni di base possono suggerire quale delle due essere conservata.</p></li>
+</ol>
 </div>
 <div id="recall-the-main-statistical-indices-and-procedures-for-model-assessment-and-model-selection." class="section level3">
 <h3>Recall the main statistical indices and procedures for model assessment and model selection.</h3>
+<ul>
+<li><p>Coefficiente di determinazione <span class="math inline">\(R^2\)</span> e la sua versione corretta: misura quanto la variabilità della variabile risposta è coperta dal modello.</p></li>
+<li><p>Procedure basate sui test F per la selezione di modelli annidati</p>
+<ul>
+<li><p>test di ANOVA</p></li>
+<li><p>Si parte dal modello con tutti i regressori, ad ogni iterazione si scarta (o si trasforma) un regressore,<br />
+eliminando dal modello il regressore con il p-value più alto, finchè tutti i regressori hanno il p-value sotto una certa soglia (backward selection)</p></li>
+<li><p>Si parte da un modello semplice a un regressore e ad ogni iterazione si aggiunge il regressore con il<br />
+p-value del test F più basso, finchè il valore del test F converge (forward selection)</p></li>
+</ul></li>
+<li><p>Statistiche AIC e BIC: <span class="math display">\[ AIC = n \log\left( \frac{\sum_{i=1}^n \hat{\varepsilon_i^2}}{n} \right) + 2p + const \]</span> BIC sostituisce <span class="math inline">\(2p\)</span> con <span class="math inline">\(\log(n)\cdot p\)</span>, penalizzando i modelli con molti parametri</p></li>
+<li><p>Statistica di Mallow <span class="math inline">\(C_p\)</span>: <span class="math display">\[ C_p = n \log\left( \frac{\sum_{i=1}^n \hat{\varepsilon_i^2}}{n} \right) + 2p - n \]</span></p></li>
+<li><p>Anche per queste statistiche si possono implementare dei metodi di forward e stepback selection (simili a quelli visti in precedenza)</p></li>
+</ul>
 </div>
 </div>
 <div id="compito-del-15-febbraio-2018" class="section level2">

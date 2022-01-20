@@ -30,7 +30,7 @@ Principali indici per variabili bivariate:
 
 -   **coefficiente di correlazione di Pearson**: misura di correlazione
     lineare standardizzata $$ r_{xy} = \frac{s_{xy}}{s_x s_y} $$
-    $r_{xy} \in [-1, 1]$. Se \$ \|r\_{xy}\| \approx 1 \$ allora c'è una
+    $r_{xy} \in [-1, 1]$. Se $|r\_{xy}| \approx 1$ allora c'è una
     forte correlazione lineare tra le variabili.
 
 -   **coefficiente di correlazione di rango di Spearman** e
@@ -51,11 +51,11 @@ Assunzioni del modello:
 
 -   Le singole variabili di risposta $Y_i$ sono:
 
--   indipendenti
+    -   indipendenti
 
--   normalmente distribuite
+    -   normalmente distribuite
 
--   con varianza costante $\sigma^2$
+    -   con varianza costante $\sigma^2$
 
 -   valore medio definito come combinazione lineare dei regressori
     $$ E(Y_i) = \beta_0 + \beta_1 x_{i1} + \beta_2 x{i_2} + \dots + \beta_p x_{ip} $$
@@ -83,7 +83,7 @@ Nella statistica predittiva i modelli di regressione servono, dato un insieme di
 
 ### Define the confidence intervals for both the regression parameters and the regression line and specify the prediction interval for a future response variable.
 Dato un livello $\gamma$ di confidenza:
--   $$ \alpha = [ \hat{\alpha} \pm t_{n-2,\frac{1-\gamma}{2}} SE(\hat{\alpha}) ] $$
+$$ \alpha = [ \hat{\alpha} \pm t_{n-2,\frac{1-\gamma}{2}} SE(\hat{\alpha}) ] $$
 $t_{n-2}$ è la distribuzione t di Student con $n-2$ gradi di libertà, $SE(\cdot)$ lo standard error. 
 
 La formula è analoga per il parametro $\beta$ e il valore di una variabile di risposta futura $Y_0$
@@ -95,36 +95,146 @@ La formula è analoga per il parametro $\beta$ e il valore di una variabile di r
 Gli intervalli di confidenza offrono delle stime molto più accurate sul reale valore del parametro ricercato rispetto a una semplice stima puntuale.
 
 ### Give the right statistical interpretation of an observed 95% confidence interval for an interest parameter.
-Un osservazione di un intervallo casuale, basato su un campione statistico con probabilità del 95% che nell'intervallo di confidenza sia contenuto il reale valore del parametro.
+Un osservazione di un intervallo casuale, basato su un campione statistico, con probabilità del 95% che nell'intervallo di confidenza sia contenuto il reale valore del parametro.
 
 ### Present a simple application regarding the estimation of a population mean.
+Da un data set di $n$ osservazioni su una variabile $y$ di interesse.
+Da queste osservazioni calcolo:
 
+-   media campionaria $\bar{y}$
+
+-   mediana $y_{0.5}$
+
+-   varianza campionaria (corretta) $S^2$
+
+-   deviazione standard $S = \sqrt{S^2}$
+
+-   mean square error $SEM = \frac{S}{\sqrt{n}}$
+
+Dato un livello di confidenza $\alpha$ l'intervallo di confidenza per $\bar{y}$ sarà
+$$ [ \bar{y} \pm t(n-1)_{\frac{1-\alpha}{2}}SEM] $$
 
 ### List some useful steps in the model fitting procedure.
+1.    Esamina la distribuzione delle variabili esplicative e della variabile risposta. Cerca distribuzioni                  asimmetriche e gli outlyers.
 
+2.    Esamina gli scatterplot di tutte le variabili esplicative e della variabile risposta.
+
+3.    Notare gli intervalli di ciascuna delle variabili del grafico a dispersione, considerando se variano                  sufficientemente per influenzare la variabile di risposta e se ciascuna delle variabili esplicative è misurata        accuratamente. 
+
+4.    Nel caso in cui uno scatterplot suggerisca dei pattern non lineari, considera l'uso di trasformate
+
+5.    In caso di distribuzioni asimmetriche si consiglia di traformare la variabile risposta
+
+6.    Le coppie di variabili esplicative con un'alta correlazione tali da sembrare fornire le stesse informazioni dovrebbero essere analizzati.
+      Le informazioni di base possono suggerire quale delle due essere conservata. 
+      
 ### Recall the main statistical indices and procedures for model assessment and model selection.
+-   Coefficiente di determinazione $R^2$ e la sua versione corretta: misura quanto la variabilità della variabile         risposta è coperta dal modello.
+
+-   Procedure basate sui test F per la selezione di modelli annidati
+    
+    *   test di ANOVA
+    
+    *   Si parte dal modello con tutti i regressori, ad ogni iterazione si scarta (o si trasforma) un regressore,  
+        eliminando dal modello il regressore con il p-value più alto, finchè tutti i regressori hanno il p-value sotto
+        una certa soglia (backward selection)
+        
+    *   Si parte da un modello semplice a un regressore e ad ogni iterazione si aggiunge il regressore con il  
+        p-value del test F più basso, finchè il valore del test F converge (forward selection)
+
+-   Statistiche AIC e BIC: $$ AIC = n \log\left( \frac{\sum_{i=1}^n \hat{\varepsilon_i^2}}{n} \right) + 2p + const $$
+    BIC sostituisce $2p$ con $\log(n)\cdot p$, penalizzando i modelli con molti parametri
+    
+-   Statistica di Mallow $C_p$: $$ C_p = n \log\left( \frac{\sum_{i=1}^n \hat{\varepsilon_i^2}}{n} \right) + 2p - n $$
+
+-   Anche per queste statistiche si possono implementare dei metodi di forward e
+    stepback selection (simili a quelli visti in precedenza)
 
 ## Compito del 15 febbraio 2018
 
 ### Describe the purpose of a point estimation procedure.
+Dato un modello statistico parametrico con un parametro sconosciuto $\theta$ e una serie di daty $y$ una procedura di stima puntuale ha lo scopo di trovare i valori per $\theta$
+più consistenti con i dati $y$.
 
 ### List the main property of an estimator and define the standard error.
+Uno stimatore $\hat{\theta}$ (inteso come variabile casuale) per un parametro $\theta$ dovrebbe essere:
+
+-   Consistente: $E(\hat{\theta}) = \theta$
+
+-   Con varianza bassa.
+
+-   Non distorto: $\hat{\theta} \xrightarrow{p} \theta$
+
+-   Asintoticamente normale per gli stimatori di massima verosimiglianza
+
+Lo standard error (SE) è la radice quadrata del **mean square error** (MSE), ed è una misura dell'accuratezza della stima.
+
+Per stimatori non distorti, lo standard error è la radice quadrata della varianza.
 
 ### Present a simple application regarding the estimation of a proportion.
+Stimare la probabilità di successo $p$ per una variabile casuale $Y=Y_1,\dots,Y_n$ con $Y_i \sim Ber(p)$.
+
+Uno stimatore $\hat{p}$ non distorto e consistente per $p$ è la media campionaria $$ \bar{Y} = \frac{\text{n° successi}}{n}$$
+
+Lo SE associato è $$ SE = \sqrt{\frac{p(1-p)}{n}} $$
 
 ### Define the one-way and the two-way analysis of variance models and highlight the basic assumptions.
+I modelli ANOVA servono a confrontare le medie di più gruppi, in particolare come la media della variabile risposta dipenda dal livello dei regressori di tipo categoriale (uno nel caso del one-way ANOVA, due nel caso del two-way ANOVA, ma è generalizzabile).
+
+Il modello statistico prevede le seguenti assunzioni:
+
+-   i termini di errore sono $\varepsilon_{ij} \sim N(0, \sigma^2)$ i.i.d.
+
+-   l'$j$-esimo valore del gruppo $i$-esimo $Y_{ij} \sim N(\mu+\tau_i, \sigma^2)$ con $\mu$ la media globale, $\tau_i$ la deviazione dalla media globale dell'$i$-esimo gruppo
 
 ### Describe the statistical tests on the main effects and on the interaction effect of the factors on the mean response.
+L'ipotesi nulla pr questi test è che tutti gli effetti introdotti per ogni gruppo sia uguale a 0, ossia che tutti i dati provengano dalla stessa origine a prescindere dal gruppo di appartenenza.
+
+Confrontando delle opportune somme di quadrati e gradi di libertà, si definisce un opportuno test F.
+
+Nel caso in cui l'interazione tra due gruppi sia significativa sul valore della media, non ha molto senso investigare anche gli effetti delle due variabili separatamente, perchè c'è un alta probabilità che entrambi la influenzino.
 
 ## Compito del 11 giugno 2018
 
 ### Present a simple application regarding the estimation of a population variance.
+Uno stimatore consistente e non distorto per la varianza è la **varianza campionaria (corretta)** $$S^2 = \frac{1}{n-1}\sum_{i=1}^n (y_i - \bar{y})^2$$
+
+In caso in cui i dati di partenza siano i.i.d. e $Y_i \sim N(\mu, \sigma^2)$, allora
+$$ \frac{(n-1)S^2}{\sigma^2} \sim \chi^2(n-1)$$
+
+Con due campioni $X$ e $Y$ i.i.d. di dimensioni $n_X$ e $n_Y$, per comparare le due varianze si utilizza il rapporto tra le varianze due campionarie corrette $$\frac{S_X^2}{S_Y^2}$$
+
+Se $X \sim N(\mu_X, \sigma_X^2)$ e $Y \sim N(\mu_Y, \sigma_Y^2)$ allora
+$$ \frac{S_X^2/\sigma_X^2}{S_Y^2/\sigma_Y^2} \sim F(n_X-1, n_Y -1) $$
 
 ### Introduce and discuss the topic of regression models with non-Gaussian response variables.
+Nel caso in cui le variabili risposta non siano di tipo gaussiano (binomiali, Bernoulli, Poisson), si utilizzano i modelli di regressione lineare generalizzati (es. i modelli logistici).
+
+Dal punto di vista del predittore lineare sono identici ai modelli gaussiani, con l'aggiunta di una funzione chiamata **link** che serve a convertire i valori dalla scala di $Y$ alla scala del predittore.
+
+Nei modelli di regressione generalizzati non esiste la varianza, ma la si generalizza con la *devianza* (che ha un ruolo simile alla somma dei quadrati) e non si utilizza il metodo dei minimi quadrati per stimare i parametri di regressione (si utilizza la stima di massima verosimiglianza o i metodi Bayesiani)
 
 ### Consider the case of a Bernoulli distributed response and define the logistic regression model.
+Per le variabili da una distribuzione Bernoulliana (quindi con risposta binaria), il modello di regressione più utilizzato è quello delle *log odds* (quote), utilizzato nell'ambito delle scommesse.
+La funzione link detta **logit (logistic) link** è $$ f(u) = \log \left( \frac{u}{1-u}\right) $$
+Data una probabilità $p$ che un evento si realizzi e una certa quota $q$:
+$$q = \frac{p}{1-p}, \quad \log(q) = \log \left( \frac{p}{1-p}\right) = \log(p) - \log(1-p)$$
+
+Di conseguenza dato il valore di una quota $q$, il valore di $p$ è uguale a
+$$ p = \frac{e^{\log(q)}}{1+e^{\log(q)}} $$
+
+In questo modo è possibile costruire dei modelli di regressione per ottenere il valore di $\log(q)$
 
 ### With regard to a fitted logistic regression model, emphasize the interpretation of the estimated regression parameter and discuss its potential application for predicting a future binary response.
+<!-- Dai modelli logistici si ottiene il valore di probabilità di "successo" per la variabile risposta. Per convertire la probabilità in un valore binario il metodo più semplice è quello di impostare una soglia oltre il quale si prevede 1, altrimenti si prevede 0.
+
+Per verificare poi l'accuratezza del modello si confrontano i valori predetti con quelli osservati. Tuttavia non è consigliato riutilizzare gli stessi dati per verificare l'accuratezza (tende a sovrastimare questo valore), per cui si ricorre a processi di **cross-validation** per ottenere riscontri più accurati. -->
+
+Le stime dei parametri di regressione nei modelli logistici misurano il "peso" che questi regressori hanno nel definire la probabilità che un evento accada o meno (al netto dei valori dei p-value sugli stessi regressori).
+
+Se un parametro ha valore positivo, allora quel regressore ha un'influenza positiva sulla probabilità (più aumenta il valore del regressore, più aumenta la probabilità che l'evento accada), altrimenti quel regressore ha un'influenza negativa (più aumenta il valore del regressore, più la probabilità che l'evento accada cala).
+
+Ovviamente non è sufficiente analizzare i singoli regressori, ma anche la correlazione tra essi, altrimenti si corre il rischio di trarre conclusioni errate o superficiali (*confounding phenomenon*).
 
 ## Compito del 4 febbraio 2019
 

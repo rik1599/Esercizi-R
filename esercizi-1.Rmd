@@ -53,28 +53,30 @@ Advertising<-read.csv(file="./data/Advertising.csv",header=TRUE)[,-1]
 
 ### Codice n°1
 ```{r eval=FALSE}
-mod.adv <- lm(Sales~TV+Radio+Newspaper, Advertising)
-summary(mod.adv)
-summary(mod.adv)$sigma^2
-AIC(mod.adv)
-par(mfrow=c(2,2), pty="s", mar=c(3,2,3,2))
-plot(mod.adv)
+mod.adv <- lm(Sales~TV+Radio+Newspaper, Advertising) #creo un modello di regressione lineare utilizzando Sales come variabile di risposta e tutte le altre variabili come regressori 
+summary(mod.adv) #visualizza le informazioni sul modello
+summary(mod.adv)$sigma^2 #calcola la varianza dei residui a partire dal residual standard error del modello
+AIC(mod.adv) #calcola l'indice AIC del modello
+par(mfrow=c(2,2), pty="s", mar=c(3,2,3,2)) #visualizzazione 2x2, grafici di forma quadrata
+plot(mod.adv) #mostra i plot diagnostici del modello (residual vs fitted, qq-plot, scale-location, residuals vs leverage)
 par(mfrow=c(1,1))
 ```
+calcola un modello di regressione lineare su Sales utilizzando tutte le variabili come regressori.
+Ne stampa successivamente alcune statistiche e i grafici per la diagnostica del modello
 
 ### Codice n°2
 ```{r eval=FALSE}
-mod.adv1 <- lm(Sales~TV+Radio+I(TV^2)+TV:Radio, Advertising)
-summary(mod.adv1)
-summary(mod.adv1)$sigma^2
-AIC(mod.adv1)
+mod.adv1 <- lm(Sales~TV+Radio+I(TV^2)+TV:Radio, Advertising) #secondo modello. I regressori sono TV, Radio, TV^2 e l'interazione tra TV e Radio
+summary(mod.adv1) #
+summary(mod.adv1)$sigma^2 #
+AIC(mod.adv1) #da confrontare con AIC di mod.adv
 par(mfrow=c(2,2), pty="s", mar=c(3,2,3,2))
 plot(mod.adv1)
 par(mfrow=c(1,1))
 intc <- predict(mod.adv1, newdata=data.frame(TV=100,Radio=20),
-                interval="confidence")
+                interval="confidence") #predice il valore di Sales sottoforma di intervallo di confidenza al 95%
 intp <- predict(mod.adv1, newdata=data.frame(TV=100,Radio=20),
-                interval="prediction")
+                interval="prediction") #predice il valore di Sales sottoforma di stima puntuale
 ```
 
 ## Compito del 15 febbraio 2018

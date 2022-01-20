@@ -231,8 +231,8 @@ summary(fit)
 -   il risultato del test F conferma quanto detto in precedenza
 
 ```{r}
-par(mfrow = c(2,2))
-plot(fit)
+par(mfrow = c(2,3))
+plot(fit, which = c(1:6))
 par(mfrow=c(1,1))
 ```
 
@@ -242,7 +242,9 @@ Oss.
 
 - Il secondo grafico evidenzia che i residui standardizzati si discostano significativamente dai quantili teorici per i valori non centrali.
 
-- Dal quarto grafico si osserva un effetto leva non necessariamente corrispondente ad un alto residuo. Le distanze di cook sono contenute, quindi si può affermare che nessun punto è particolarmente influente (ci sono un paio di punti vicini alla soglia del 0.5).
+- Dal quinto grafico si osserva un effetto leva non necessariamente corrispondente ad un alto residuo. Le distanze di cook sono contenute, quindi si può affermare che nessun punto è particolarmente influente (ci sono un paio di punti vicini alla soglia del 0.5). Il grafico delle distanza di Cook sostanzialmente conferma questa supposizione, evidenziando i tre valori critici.
+
+
 
 Da tali diagnostiche, assieme a quanto emerso dal primo grafico, si osserva che sarebbe appropriato valutare modelli più complessi, magari che escludano i predittori che ottenuto un p-value alto nei test sui coefficenti e che considerino trasformate di alcuni regressori (come ad esempio 1/hp invece di hp).
 
@@ -262,7 +264,6 @@ fit$model[c("Toyota Corolla", "Chrysler Imperial", "Maserati Bora", "Fiat 128"),
 ```
 
 Si osserva ad esempio che l'oss. "Toyota Corolla" risulta avere un valore estremo per mpg (il massimo), e risulta anche essere nel primo quartile per quanto riguarda le variabili hp e wt. 
-
 
 ## Compito del 13 febbraio 2017
 
