@@ -1,17 +1,3 @@
----
-title: "Domande teoria"
-author: "Riccardo Belliato - Emanuele Lena"
-date: "12/19/2021"
-output: html_document
-editor_options: 
-  markdown: 
-    wrap: 72
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
 ## Compito del 1 febbraio 2017
 
 ### Describe what are the aims of Exploratory Data Analysis and present the main numerical summaries for bivariate data.
@@ -83,15 +69,19 @@ Nella statistica predittiva i modelli di regressione servono, dato un insieme di
 
 ### Define the confidence intervals for both the regression parameters and the regression line and specify the prediction interval for a future response variable.
 Dato un livello $\gamma$ di confidenza:
-$$ \alpha = [ \hat{\alpha} \pm t_{n-2,\frac{1-\gamma}{2}} SE(\hat{\alpha}) ] $$
+$$ \alpha = \left[ \hat{\alpha} \pm t_{n-2,\frac{1-\gamma}{2}} SE(\hat{\alpha}) \right] $$
 $t_{n-2}$ è la distribuzione t di Student con $n-2$ gradi di libertà, $SE(\cdot)$ lo standard error. 
 
-La formula è analoga per il parametro $\beta$ e il valore di una variabile di risposta futura $Y_0$
+La formula è analoga per il parametro $\beta$ e per la linea di regressione $\mu_0 = \hat{\alpha} + \hat{\beta}x_0$.
 
+L'intervallo di previsione per una variabile di risposta $Y_0 = \mu_0 + \varepsilon_0$ dato un nuovo valore $x_0$ vale
+$$ \left[ \hat{Y_0} \pm t_{n-2,\frac{1-\gamma}{2}}SE(\hat{Y_0}) \right] $$
+Con $SE(\hat{Y_0}) = \sqrt{\hat{\sigma^2} + SE(\hat{\mu_0})^2}$
 
 ## Compito del 13 febbraio 2017
 
-### Describe the purpose of an interval estimation procedure.
+### Describe the purpose of an interval estimation procedure.Condence intervals may be calculated for the model parameters and
+for the regression line at some given value x0 , name
 Gli intervalli di confidenza offrono delle stime molto più accurate sul reale valore del parametro ricercato rispetto a una semplice stima puntuale.
 
 ### Give the right statistical interpretation of an observed 95% confidence interval for an interest parameter.
@@ -109,10 +99,10 @@ Da queste osservazioni calcolo:
 
 -   deviazione standard $S = \sqrt{S^2}$
 
--   mean square error $SEM = \frac{S}{\sqrt{n}}$
+-   standard error della media $SEM = \frac{S}{\sqrt{n}}$
 
 Dato un livello di confidenza $\alpha$ l'intervallo di confidenza per $\bar{y}$ sarà
-$$ [ \bar{y} \pm t(n-1)_{\frac{1-\alpha}{2}}SEM] $$
+$$ \left[ \bar{y} \pm t(n-1)_{\frac{1-\alpha}{2}}SEM \right] $$
 
 ### List some useful steps in the model fitting procedure.
 1.    Esamina la distribuzione delle variabili esplicative e della variabile risposta. Cerca distribuzioni                  asimmetriche e gli outlyers.
@@ -188,7 +178,7 @@ Il modello statistico prevede le seguenti assunzioni:
 -   l'$j$-esimo valore del gruppo $i$-esimo $Y_{ij} \sim N(\mu+\tau_i, \sigma^2)$ con $\mu$ la media globale, $\tau_i$ la deviazione dalla media globale dell'$i$-esimo gruppo
 
 ### Describe the statistical tests on the main effects and on the interaction effect of the factors on the mean response.
-L'ipotesi nulla pr questi test è che tutti gli effetti introdotti per ogni gruppo sia uguale a 0, ossia che tutti i dati provengano dalla stessa origine a prescindere dal gruppo di appartenenza.
+L'ipotesi nulla per questi test è che tutti gli effetti introdotti per ogni gruppo sia uguale a 0, ossia che tutti i dati provengano dalla stessa origine a prescindere dal gruppo di appartenenza.
 
 Confrontando delle opportune somme di quadrati e gradi di libertà, si definisce un opportuno test F.
 
@@ -226,10 +216,6 @@ $$ p = \frac{e^{\log(q)}}{1+e^{\log(q)}} $$
 In questo modo è possibile costruire dei modelli di regressione per ottenere il valore di $\log(q)$
 
 ### With regard to a fitted logistic regression model, emphasize the interpretation of the estimated regression parameter and discuss its potential application for predicting a future binary response.
-<!-- Dai modelli logistici si ottiene il valore di probabilità di "successo" per la variabile risposta. Per convertire la probabilità in un valore binario il metodo più semplice è quello di impostare una soglia oltre il quale si prevede 1, altrimenti si prevede 0.
-
-Per verificare poi l'accuratezza del modello si confrontano i valori predetti con quelli osservati. Tuttavia non è consigliato riutilizzare gli stessi dati per verificare l'accuratezza (tende a sovrastimare questo valore), per cui si ricorre a processi di **cross-validation** per ottenere riscontri più accurati. -->
-
 Le stime dei parametri di regressione nei modelli logistici misurano il "peso" che questi regressori hanno nel definire la probabilità che un evento accada o meno (al netto dei valori dei p-value sugli stessi regressori).
 
 Se un parametro ha valore positivo, allora quel regressore ha un'influenza positiva sulla probabilità (più aumenta il valore del regressore, più aumenta la probabilità che l'evento accada), altrimenti quel regressore ha un'influenza negativa (più aumenta il valore del regressore, più la probabilità che l'evento accada cala).
@@ -239,33 +225,192 @@ Ovviamente non è sufficiente analizzare i singoli regressori, ma anche la corre
 ## Compito del 4 febbraio 2019
 
 ### Define the Gaussian distribution and describe its usefulness in statistical applications.
+La distribuzione gaussiana (o normale) $X \sim N(\mu, \sigma^2)$ ha le seguenti caratteristiche:
+
+-   distribuzione **continua** con supporto $\mathbb{R}$
+
+-   parametri $\mu \in \mathbb{R}$ e $\sigma^2 > 0$
+
+-   valore atteso $E(X) = x_{0.5} = \mu$ e varianza $Var(X) = \sigma^2$ 
+
+-   funzione di densità di probabilità 
+$$f(x) = \frac{1}{\sqrt{2\pi}\sigma}\exp \left\{ - \frac{(x-\mu)^2}{2\sigma^2} \right\}$$
+
+-   chiusa rispetto a trasformazioni lineari $Y = aX+b \sim N(a\mu+b, a^2\sigma^2)$
+
+Si tratta della distribuzione più importante nell'ambito della Statistica e Probabilità, in quanto è:
+
+-   il risultato del teorema centrale del limite
+
+-   viene utilizzata per modellare un gran numero di fenomeni continui (anche attraverso l'uso di traformazioni).
 
 ### Discuss the case in which the explanatory variables are factor, with particular regard to the codification using dummy variables.
+Nel caso in cui i regressori siano fattori si utilizzano i modelli ANOVA.
+
+La variabile risposta (o la sua trasformata) deve avere varianza costante.
+
+Per includere un fattore con $h$ livelli in un modello, si introducono nel modello $h-1$ variabili binarie (dummy), ognuna con il proprio coefficiente di regressione, il quale serve a esprimere il main effect del fattore sulla risposta (lo scostamento tra la media globale e la media del gruppo).
+
+Uno dei livelli è impostato come referenza, per cui gli effetti degli altri livelli sono misurati a partire da quest'ultimo.
 
 ### Consider the situation with both factors and numerical explanatory variables, focusing on the particular case of models admitting different simple regression lines.
+Nel caso in cui si debba fare una regressione che coinvolga sia variabili categoriali che numeriche, si utilizza l'analisi della varianza e i test $F$ (o $t$) per scegliere sostanzialmente tra due tipi di modelli:
+
+-   modelli di regressione in cui la differenza tra un livello e l'altro è solo nell'intercetta (quindi le linee di regressione sono parallele)
+
+-   modelli che includono anche l'interazione tra le variabili categoriali e quelle numeriche (moltiplicando la variabile dummy con la variabile numerica), ottenendo quindi linee di regressione diverse per ogni categoria 
 
 ## Compito del 21 febbraio 2019
 
 ### Present a simple application regarding the estimation of the difference of the means of two independent populations.
+1.  Calcolo le medie campionarie delle due popolazioni $\bar{X}$ e $\bar{Y}$ e stimo il valore della differenza come $\bar{X} - \bar{Y}$
+
+2.  Calcolo lo standard error della differenza $SED$ utilizzando la **varianza campionaria aggregata corretta (pooled sample variance)** $S_p^2$
+$$ S_p^2 = \frac{\sum_{i=1}^{n_X}(X_i - \bar{X})^2+\sum_{i=1}^{n_Y}(Y_i - \bar{Y})^2}{n_X + n_Y - 2} $$
+$$ SED = \sqrt{SEM_X^2 + SEM_Y^2} = S_p\sqrt{\frac{1}{n_X} + \frac{1}{n_Y}}$$
 
 ## Compito del 28 gennaio 2020
 
 ### Describe the purpose of a (parametric) hypothesis testing procedure.
+I test statistici parametrici si basano sulla specifica di un modello statistico parametrico (con parametro $\theta$) e hanno lo scopo di verificare se una particolare ipotesi sul parametro $\theta$ è consistente con i dati a disposizione.
+
+I test non-parametrici invece utilizzano delle assunzioni più deboli, sopratutto sulla distribuzione di probabilità della variabile casuale in analisi.
 
 ### Define the notions of significance level, critical region and p-value.
+-   il livello di significatività $\alpha$ di un test, solitamente all'1% o al 5%, è la probabilità che il test conduca a un errore di tipo I (rifiutare l'ipotesi nulla quando è vera).
+
+-   la regione critica è l'insieme dei valori della distribuzione della statistica di test per cui l'ipotesi nulla viene rifiutata a favore di quella alternativa.
+
+-   il $p$-value è la probabilità (sotto l'ipotesi nulla) di ottenere risultati ugualmente o meno compatibili, di quelli osservati durante il test, con la suddetta ipotesi. In pratica aiuta a capire se la differenza tra il valore osservato e quello ipotizzato è dovuto alla casualità introdotta dal campionamento oppure se tale differenza è statisticamente significativa.
+
+Solitamente se il valore del $p$-value è inferiore al livello di significatività, allora l'ipotesi nulla viene rigettata.
 
 ### Present a simple application concerning the testing on the equality of the means of two independent populations.
+Le ipotesi sono:
+$$H_0 : \mu = \mu_0 \quad H_1 : \mu \neq \mu_0$$
+
+Se le osservazioni provengono da una v.c. con distribuzione normale, si utilizza il $t$ test, che vale, sotto $H_0$
+$$ T = \frac{\bar{Y} - \mu_0}{S/\sqrt{n}} \sim t(n-1) $$
+
+Se la varianza $\sigma^2$ è conosciuta si usa lo $z$ test, che vale, sotto $H_0$
+$$ Z = \frac{\bar{Y} - \mu_0}{\sigma/\sqrt{n}} \sim N(0,1) $$
+
+Dato un livello di significatività $\alpha$ la regione critica per il $t$ test è
+$$R_\alpha = \{ y:|t|\geq t_{n-1;\alpha/2} \}$$
+
+Il $p$-value
+$$ p = 2\min\{ P_{H_0} (T \leq t), P_{H_0} (T \geq t) \} $$
 
 ### Discuss the crucial point of selecting the explanatory variables in multiple linear regression models.
+1.  Partire da informazioni conosciute sul fenomeno in questione (ad esempio, ci viene indicato da un esperto che una certa variabile va necessariamente inserita in un modello)
+
+2.  Avere a disposizione un buon numero di dati (almeno 10 volte il numero di covariate)
+
+3.  Avere una visualizzazione grafica delle variabili in gioco (es. matrice scatterplot)
+
+4.  Evitare covariate che forniscono informazioni ridondanti o sovrapposte
+
+5.  Attenzione alle correlazioni spurie! (correlazioni casuali o dovute a variabili nascoste)
+
+6.  Utilizzare (con cautela!) tecniche di selezione semi-automatica delle covariate come lasso, booting, least angle regression, oppure l'Analisi delle Componenti principali (ridurre il numero di covariate sostituendole con delle combinazioni lineari delle stesse)
 
 ### Discuss the problem of multicollinearity and consider the potential remedies.
+Ci possono essere situazioni in cui le covariate portano contenuti informativi sovrapposti (c'è un legame tra le covariate).
+
+Per misurare queste correlazioni si utilizza il **fattore di inflazione della varianza** che vale per la variabile $x_j$
+$$ VIF_j = \frac{1}{1-R_j^2} $$
+Dove $R_j^2$ è il coefficiente $R^2$ del modello di regressione ottenuto utilizzando $x_j$ come variabile risposta e le altre variabili esplicative come regressori.
 
 ## Compito del 18 febbraio 2020
 
 ### Describe what are the aims of Exploratory Data Analysis and present the main graphical summaries for describing the relationship between different types (namely, categorical and numerical) of variables.
+Il principale scopo dell'analisi esplorativa è quello di visualizzare
+graficamente e numericamente il dataset a disposizione alla ricerca di
+pattern, idee e ipotesi da confermare attraverso le successive analisi
+formali o che inizialmente non erano state prese in considerazione.
+
+I principali grafici per confrontare variabili numeriche e categoriali sono i boxplot e gli strip plot: su un asse viene messa la variabile categoriale, sull'altro asse quella numerica. Per ogni livello della variabile categoriale vengono riportati i valori (sottoforma di punti nel caso degli strip plot, oppure sottoforma di box nei boxplot) e servono a confrontare l'andamento dei dati in base al gruppo di appartenenza.
 
 ### Define the simple linear regression model and recall the t test on the nullity of the slope parameter, discussing its role in evaluating the model adequacy.
+Un modello di regressione lineare mette in correlazione la variabile risposta con una variabile esplicativa (detta regressore) secondo la seguente formula:
+$$ y_i = \alpha + \beta x_i + \varepsilon_i $$
+
+Il test $t$ sulla nullità del parametro $\beta$ utilizza come ipotesi nulla $H_0:\beta=0$ e ipotesi alternativa $H_1:\beta\neq 0$.
+Nel caso di regressioni lineari semplici il $p$-value di questo test serve a verificare la significatività del regressore preso in esame sul valore della variabile risposta.
 
 ### Define the one-way analysis of variance model and describe the statistical test on the effect of the factor on the mean response
+One-way ANOVA è un insieme di tecniche per confrontare le medie di gruppi di dati in base al livello di un fattore (di solito varabili categoriali).
+
+Il modello statistico alla base di ANOVA è un caso particolare di regressione lineare:
+$$ y_{ij} = \mu + \tau_i + \varepsilon_{ij} $$
+Dove $y_{ij}$ è l'osservazione $j$-esima appartenente all'$i$-esimo gruppo, $\mu$ è la media globale, $\varepsilon_{ij}$ l'errore random, $\tau_i$ è la differenza tra la media globale e la media dell'$i$-esimo gruppo (effetto trattamento).
+
+Sul valore di $\tau_i$ è definito un test statistico così definito:
+$$ H_0:\tau_1=\tau_2=\dots=\tau_a=0 $$
+$$ H_1:\tau_i \neq 0 \text{ per almeno un gruppo}$$
+E si svolge comparando due stime della varianza:
+$$ \hat{\sigma^2_0} = \frac{\sum_{i=1}^a n(\bar{y_i} - \bar{y})^2}{a-1} \quad \hat{\sigma^2} = \frac{\sum_{i=1}^a \sum_{j=1}^n (y_{ij} - \bar{y_i})^2}{an-a} $$
+Con il test $F$ che vale, sotto $H_0$
+$$ F = \frac{\hat{\sigma^2_0}}{\hat{\sigma^2}} \sim F(a-1, an-a) $$
 
 ### Compare the regression model and the ANOVA model when the levels of the factor are quantitative.
+Nei modelli ANOVA il test statistico sull'effetto trattamento ignora il fatto che i livelli siano quantitativi.
+
+In generale, in questi casi, i "classici" modelli di regressione sono preferibili rispetto ai modelli ANOVA, perchè permettono (ad esempio) di poter interpolare su livelli successivi e forniscono $p$-value più piccoli (in media)
+
+## Varie ed eventuali
+### (Cap 3a) Linea dei minimi quadrati pesata
+Per stimare i parametri di regressione con il metodo dei minimi quadrati, può essere necessario introdurre dei "pesi" $w_i$ per ogni osservazione. La funzione da minimizzare diventa
+$$\min \sum_{i=1}^n (y_i - \hat{\alpha} - \hat{\beta}x_i)^2w_i$$
+
+### (Cap 3a) Paradosso di Simpson
+Si riferisce al fatto che le relazione tra due variabili può cambiare quando i dati sono partizionati in sottogruppi e/o quando vengono introdotte nuove variabili che prima erano nascoste. In pratica avere dati troppo aggregati può portare a conclusioni errate!
+
+### (Cap 3b) Test di indipendenza chi-quadro
+Test statistico per stabilire se due variabili categoriali sono indipendenti tra loro.
+In pratica si testa se per tutte le combinazioni possibili la probabilità sia pari al prodotto delle probabilità marginali (ipotesi nulla), attraverso la seguente statistica:
+$$ X^2 = \sum_{ij}\frac{(n_{ij} - e_{ij})^2}{e_{ij}} \sim \chi^2((r-1)\cdot(c-1)) $$
+$$ e_{ij} = \frac{n_i n_j}{n}$$
+sotto ipotesi nulla e per grandi tabelle di contingenza ($e_{ij} \leq 5$ per ogni cella).
+
+### (Cap 4) Il metodo di Box-Cox
+Per scegliere la giusta trasformata per la variabile risposta (per aumentarne simmetria e normalità).
+$$ y(\lambda) =
+\begin{cases}
+\frac{y^{\lambda}-1}{\lambda}   &\text{se $\lambda \neq 0$} \\
+\log(y)     &\text{se $\lambda = 0$}
+\end{cases}
+$$
+Per un parametro reale $\lambda$ ottenibile attraverso diversi metodi, il più utilizzato prevede di massimizzare il valore di una funzione di log-verosimiglianza.
+
+### (Cap 6) Misurare la qualità di un modello
+Per verificare poi l'accuratezza del modello si confrontano i valori predetti con quelli osservati, attraverso il calcolo del *training MSE*.
+$$ MSE = \frac{1}{n} \sum_{i=1}^n (y_i - \hat{f}(x_i))^2 $$
+Tuttavia non è consigliato riutilizzare gli stessi dati per verificare l'accuratezza (tende a sovrastimare questo valore), per cui si ricorre a processi di **cross-validation** per ottenere riscontri più accurati.
+
+### (Cap 6) Regressione vs classificazione
+Regressione: se la risposta è quantitativa
+Classificazione: se la risposta è qualitativa
+
+### (Cap 6) Classificatori
+-   Classificatore di Bayes
+
+-   Classificatore logistico
+
+-   Linear discriminant analysis (LDA)
+
+-   k-Nearest Neighbors
+
+### (Cap 6) Matrice di confusione
+
+### (Cap 6) Curva ROC
+
+### (Cap 7) Analisi delle componenti principali
+
+### (Cap 7) Proporzione della varianza
+
+### (Cap 7) Algoritmi di clustering
+
+### (Cap 7) Misure di dissimilarità
+
+### (Cap 7) Alcune problematiche sul clustering
