@@ -393,19 +393,49 @@ Regressione: se la risposta è quantitativa
 Classificazione: se la risposta è qualitativa
 
 ### (Cap 6) Classificatori
--   Classificatore di Bayes
+-   Classificatore di Bayes: classificatore migliore. Assegna 1 se 
+$$P(Y_0 = 1 | X_0 = x_0) > P(Y_0 = 0 | X_0 = x_0)$$
+Siccome non è conosciuta la distribuzione di probabilità di $Y_0$ dato $X_0=x_0$ non è utilizzabile nella pratica, ma lo usa come confronto per gli altri metodi
 
--   Classificatore logistico
+-   Classificatore logistico: basato su modelli di regressione lineare logistica
+$$P(Y_i = 1 | X_i = x_i) = \frac{\exp\{x_i^T\beta\}}{1+\exp\{x_i^T\beta\}}$$
 
--   Linear discriminant analysis (LDA)
+-   Linear e Quadratic discriminant analysis (LDA/QDA): si basa sulla stima della probabilità $P(X = x | Y = y)$ più facile da stimare e poi ottenere $P(Y = x | X = x)$ con il teorema di Bayes
 
--   k-Nearest Neighbors
+-   k-Nearest Neighbors (kNN): stima le probabiità di un punto $x_0$ in base al valore dei $k>0$ punti più vicini appartenenti ai dati di training.
+$$ \hat{P}(Y_0 = 1 | X_0 = x_0) = \frac{1}{k}\sum_{i \in \mathcal{N_0}} y_i $$
+
+Questo metodo è molto efficace con predittori numerici, ma è generalizzabile su predittori categoriali.
+
+Il valore di $k$ definisce la flessibilità della procedura di classificazione:
+
+-   per valori piccoli di $k$ riduce il rischio di bias ma aumenta la varianza della risposta
+
+-   per valori grandi di $k$ si riduce la varianza, ma aumenta il rischio di incorrere in bias.
+
+kNN è utilizzabile anche per i problemi di regressione per approssimare risposte continue
 
 ### (Cap 6) Matrice di confusione
+Matrice per misurare le performance predittive di un classificatore.
+Sulle righe si mettono i valori predetti, sulle colonne quelli osservati.
 
-### (Cap 6) Curva ROC
+### (Cap 6) Curva ROC (Receiver Operating Characteristic)
+Grafico che serve a selezionare la soglia di probabilità per classificatori binari allo scopo di aumentare l'accuratezza del modello.
 
-### (Cap 7) Analisi delle componenti principali
+Si ottiene plottando il *true positive rate* (numero di valori osservati veri predetti correttamente su tutte le osservazioni vere) sul *false negative rate* = 1-*true negative rate* (numero di valori osservati falsi predetti correttamente su tutte le osservazioni false).
+
+Più l'area tra la curva ROC e la diagonale del grafico (classificatore completamente casuale) è ampia più il classificatore è preciso.
+
+### (Cap 7) Analisi delle componenti principali (PCA)
+Da un insieme di variabili di dimensione $p$ vogliamo definire un insieme di variabili derivate chiamate componenti principali, che riassumono tutta la variabilità del dataset di partenza, senza perdere informazioni.
+
+Siano $X_1, \dots, X_p$ un set di variabili. Si dice **prima componente principale** la combinazione lineare normalizzata (la somma dei quadrati dei coefficienti è pari a 1) delle variabili con la varianza maggiore. 
+
+Buona prassi è standardizzare (normalizzare) le variabili prima di procedere con la PCA.
+
+Trovato il primo vettore dei coefficienti $\phi_{i1}$ il risultati delle combinazioni sono detti **scores** della prima componente principale.
+
+La procedura è poi interabile fino a ottenere $\min(n-1, p)$ componenti, ad ogni iterazione si richiede di massimizzare la varianza non correlata alle componenti precedenti.
 
 ### (Cap 7) Proporzione della varianza
 
