@@ -1,0 +1,72 @@
+---
+output:
+  word_document: default
+  html_document: default
+---
+After fitting the model
+`fit <- lm(mpg ∼ disp + hp + wt + drat, data=mtcars)`, the following
+outputs are obtained by the R commands `summary(fit)` and `plot(fit)`,
+respectively.
+Describe how to interpret these results, and then suggest how to proceed
+with further analyses.
+
+```{r echo=FALSE}
+fit <- lm(mpg ~ disp + hp + wt + drat, data=mtcars)
+summary(fit)
+```
+#### Osservazioni
+
+-   Modello con 4 regressori continui e variabile risposta continua
+
+-   L'intercetta è elevata, ma sembra comunque essere coerente con il contesto
+
+-   Alcuni regressori (disp e drat) hanno p-value elevati (maggiori del 5%), 
+    quindi probabilmente non sono significativi
+
+-   I p-value di hp e wt sono sufficientemente bassi da rifiutare l'ipotesi nulla,
+
+-   hp e disp hanno coefficiente stimato piuttosto basso, ma ciò potrebbe essere causato
+    dalla diversa scala delle variabili.
+
+-   I coefficienti di determinazione $R^2$ e $R^2$ corretto assumono un buon valore
+    (poco oltre l'80%), ciò significa che il modello copre una parte significativa di
+    variabilità del dataset.
+    
+-   Il test F suggerisce una buona significatività di tutte le variabili,
+    in relazione ai p-value dei regressori, probabilmente c'è qualche collinearità
+    tra le variabili.
+
+```{r}
+plot(fit, which = c(1:6), lwd=2)
+```
+
+#### Osservazioni
+
+-   La curva non è nè lineare, nè parallela alle ascisse, quindi l'ipotesi di linearità
+    è violata (c'è qualche regressore che ha effetti non lineari sulla risposta),
+
+-   Sulle code il qq-plot presenta un deciso scostamento rispetto ai quantili teorici,
+    l'ipotesi di normalità dei residui è violata
+    
+-   Dal grafico dei residui standardizzati sembra essere rispettata l'ipotesi di
+    omogeneità della varianza dei residui (la curva è abbastanza orizzontale)
+
+-   Dagli ultimi tre grafici risulta che nessun punto ha effetti leva o distanza di
+    Cook particolarmente elevati.
+    
+```{r}
+library(DAAG)
+vif(fit)
+```
+L'analisi VIF conferma la presenza di collinearità tra le variabili esplicative
+(per disp e wt il fattore VIF è maggiore di 5).
+
+
+### Suggerimenti per ulteriori analisi
+
+-   utilizzare metodi stepforward e backforward (eliminando o aggiungendo regressori)
+    per la scelta di un modello tale che elimini le collinearità (verificabili 
+    con la funzione `vif`) e riduca i valori dei p-value.
+
+-   trovato un modello con le caratteristiche di cui sopra, valutare l'utilizzo di
+    qualche trasformata per ridurre o eliminare gli effetti non lineari.

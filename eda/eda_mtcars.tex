@@ -1,0 +1,579 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\author{}
+\date{\vspace{-2.5em}}
+
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+
+\begin{document}
+
+Let us consider the dataframe mtcars, which comprises the fuel
+consumption and 10 aspects of design and performance for 32 automobiles
+(1970s models). The help file is given below
+
+Describe how to perform a preliminary data analysis on this dataframe,
+using suitable R commands.
+
+\hypertarget{scopo-e-analisi-delle-variabili}{%
+\subsubsection{Scopo e analisi delle
+variabili}\label{scopo-e-analisi-delle-variabili}}
+
+Si vuole creare un modello statistico di regressione per analizzare i
+consumi medi di alcuni modelli di auto presenti nel dataframe
+\texttt{mtcars}.
+
+La variabile risposta è \texttt{mpg} che rappresenta il numero di miglia
+(americane) percorse (in media) con un gallone di carburante.
+
+Analizziamo le variabili
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{str}\NormalTok{(mtcars)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 'data.frame':    32 obs. of  11 variables:
+##  $ mpg : num  21 21 22.8 21.4 18.7 18.1 14.3 24.4 22.8 19.2 ...
+##  $ cyl : num  6 6 4 6 8 6 8 4 4 6 ...
+##  $ disp: num  160 160 108 258 360 ...
+##  $ hp  : num  110 110 93 110 175 105 245 62 95 123 ...
+##  $ drat: num  3.9 3.9 3.85 3.08 3.15 2.76 3.21 3.69 3.92 3.92 ...
+##  $ wt  : num  2.62 2.88 2.32 3.21 3.44 ...
+##  $ qsec: num  16.5 17 18.6 19.4 17 ...
+##  $ vs  : num  0 0 1 1 0 1 0 1 1 1 ...
+##  $ am  : num  1 1 1 0 0 0 0 0 0 0 ...
+##  $ gear: num  4 4 4 3 3 3 3 4 4 4 ...
+##  $ carb: num  4 4 1 1 2 1 4 2 2 4 ...
+\end{verbatim}
+
+Ci sono alcune variabili da convertire
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mtcars}\SpecialCharTok{$}\NormalTok{cyl }\OtherTok{\textless{}{-}} \FunctionTok{as.integer}\NormalTok{(mtcars}\SpecialCharTok{$}\NormalTok{cyl)}
+\NormalTok{mtcars}\SpecialCharTok{$}\NormalTok{hp }\OtherTok{\textless{}{-}} \FunctionTok{as.integer}\NormalTok{(mtcars}\SpecialCharTok{$}\NormalTok{hp)}
+\NormalTok{mtcars}\SpecialCharTok{$}\NormalTok{vs }\OtherTok{\textless{}{-}} \FunctionTok{factor}\NormalTok{(mtcars}\SpecialCharTok{$}\NormalTok{vs)}
+\FunctionTok{levels}\NormalTok{(mtcars}\SpecialCharTok{$}\NormalTok{vs) }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"V{-}shaped"}\NormalTok{, }\StringTok{"straight"}\NormalTok{)}
+\NormalTok{mtcars}\SpecialCharTok{$}\NormalTok{am }\OtherTok{\textless{}{-}} \FunctionTok{factor}\NormalTok{(mtcars}\SpecialCharTok{$}\NormalTok{am)}
+\FunctionTok{levels}\NormalTok{(mtcars}\SpecialCharTok{$}\NormalTok{am) }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"automatic"}\NormalTok{, }\StringTok{"manual"}\NormalTok{)}
+\NormalTok{mtcars}\SpecialCharTok{$}\NormalTok{gear }\OtherTok{\textless{}{-}} \FunctionTok{as.integer}\NormalTok{(mtcars}\SpecialCharTok{$}\NormalTok{gear)}
+\NormalTok{mtcars}\SpecialCharTok{$}\NormalTok{carb }\OtherTok{\textless{}{-}} \FunctionTok{as.integer}\NormalTok{(mtcars}\SpecialCharTok{$}\NormalTok{carb)}
+\FunctionTok{str}\NormalTok{(mtcars)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 'data.frame':    32 obs. of  11 variables:
+##  $ mpg : num  21 21 22.8 21.4 18.7 18.1 14.3 24.4 22.8 19.2 ...
+##  $ cyl : int  6 6 4 6 8 6 8 4 4 6 ...
+##  $ disp: num  160 160 108 258 360 ...
+##  $ hp  : int  110 110 93 110 175 105 245 62 95 123 ...
+##  $ drat: num  3.9 3.9 3.85 3.08 3.15 2.76 3.21 3.69 3.92 3.92 ...
+##  $ wt  : num  2.62 2.88 2.32 3.21 3.44 ...
+##  $ qsec: num  16.5 17 18.6 19.4 17 ...
+##  $ vs  : Factor w/ 2 levels "V-shaped","straight": 1 1 2 2 1 2 1 2 2 2 ...
+##  $ am  : Factor w/ 2 levels "automatic","manual": 2 2 2 1 1 1 1 1 1 1 ...
+##  $ gear: int  4 4 4 3 3 3 3 4 4 4 ...
+##  $ carb: int  4 4 1 1 2 1 4 2 2 4 ...
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(mtcars)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##       mpg             cyl             disp             hp       
+##  Min.   :10.40   Min.   :4.000   Min.   : 71.1   Min.   : 52.0  
+##  1st Qu.:15.43   1st Qu.:4.000   1st Qu.:120.8   1st Qu.: 96.5  
+##  Median :19.20   Median :6.000   Median :196.3   Median :123.0  
+##  Mean   :20.09   Mean   :6.188   Mean   :230.7   Mean   :146.7  
+##  3rd Qu.:22.80   3rd Qu.:8.000   3rd Qu.:326.0   3rd Qu.:180.0  
+##  Max.   :33.90   Max.   :8.000   Max.   :472.0   Max.   :335.0  
+##       drat             wt             qsec              vs             am    
+##  Min.   :2.760   Min.   :1.513   Min.   :14.50   V-shaped:18   automatic:19  
+##  1st Qu.:3.080   1st Qu.:2.581   1st Qu.:16.89   straight:14   manual   :13  
+##  Median :3.695   Median :3.325   Median :17.71                               
+##  Mean   :3.597   Mean   :3.217   Mean   :17.85                               
+##  3rd Qu.:3.920   3rd Qu.:3.610   3rd Qu.:18.90                               
+##  Max.   :4.930   Max.   :5.424   Max.   :22.90                               
+##       gear            carb      
+##  Min.   :3.000   Min.   :1.000  
+##  1st Qu.:3.000   1st Qu.:2.000  
+##  Median :4.000   Median :2.000  
+##  Mean   :3.688   Mean   :2.812  
+##  3rd Qu.:4.000   3rd Qu.:4.000  
+##  Max.   :5.000   Max.   :8.000
+\end{verbatim}
+
+\hypertarget{analisi-della-variabile-risposta}{%
+\subsubsection{Analisi della variabile
+risposta}\label{analisi-della-variabile-risposta}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(moments)}
+
+\FunctionTok{hist}\NormalTok{(mtcars}\SpecialCharTok{$}\NormalTok{mpg, }\AttributeTok{probability =}\NormalTok{ T, }\AttributeTok{breaks =} \DecValTok{10}\NormalTok{)}
+\FunctionTok{lines}\NormalTok{(}\FunctionTok{density}\NormalTok{(mtcars}\SpecialCharTok{$}\NormalTok{mpg), }\AttributeTok{lwd=}\DecValTok{3}\NormalTok{)}
+\FunctionTok{lines}\NormalTok{(}
+  \FunctionTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{50}\NormalTok{, }\FloatTok{0.01}\NormalTok{), }
+  \FunctionTok{dnorm}\NormalTok{(}\FunctionTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{50}\NormalTok{, }\FloatTok{0.01}\NormalTok{), }\AttributeTok{mean =} \FunctionTok{mean}\NormalTok{(mtcars}\SpecialCharTok{$}\NormalTok{mpg), }\FunctionTok{sqrt}\NormalTok{(}\FunctionTok{var}\NormalTok{(mtcars}\SpecialCharTok{$}\NormalTok{mpg))),}
+  \AttributeTok{col =} \StringTok{"cyan"}\NormalTok{)}
+\FunctionTok{abline}\NormalTok{(}\AttributeTok{v=}\FunctionTok{mean}\NormalTok{(mtcars}\SpecialCharTok{$}\NormalTok{mpg), }\AttributeTok{col =} \StringTok{"red"}\NormalTok{)}
+\FunctionTok{abline}\NormalTok{(}\AttributeTok{v=}\FunctionTok{median}\NormalTok{(mtcars}\SpecialCharTok{$}\NormalTok{mpg), }\AttributeTok{col =} \StringTok{"green"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{eda_mtcars_files/figure-latex/unnamed-chunk-5-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{skewness}\NormalTok{(mtcars}\SpecialCharTok{$}\NormalTok{mpg)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.6404399
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{kurtosis}\NormalTok{(mtcars}\SpecialCharTok{$}\NormalTok{mpg)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 2.799467
+\end{verbatim}
+
+Il grafico risulta leggermente decentrato rispetto alla distribuzione
+normale, proviamo una trasformata
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{logmpg }\OtherTok{\textless{}{-}} \FunctionTok{log}\NormalTok{(mtcars}\SpecialCharTok{$}\NormalTok{mpg)}
+\FunctionTok{hist}\NormalTok{(logmpg, }\AttributeTok{probability =}\NormalTok{ T, }\AttributeTok{breaks =} \DecValTok{10}\NormalTok{)}
+\FunctionTok{lines}\NormalTok{(}\FunctionTok{density}\NormalTok{(logmpg), }\AttributeTok{lwd=}\DecValTok{3}\NormalTok{)}
+\FunctionTok{lines}\NormalTok{(}
+  \FunctionTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{50}\NormalTok{, }\FloatTok{0.01}\NormalTok{), }
+  \FunctionTok{dnorm}\NormalTok{(}\FunctionTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{50}\NormalTok{, }\FloatTok{0.01}\NormalTok{), }\AttributeTok{mean =} \FunctionTok{mean}\NormalTok{(logmpg), }\FunctionTok{sqrt}\NormalTok{(}\FunctionTok{var}\NormalTok{(logmpg))),}
+  \AttributeTok{col =} \StringTok{"cyan"}\NormalTok{)}
+\FunctionTok{abline}\NormalTok{(}\AttributeTok{v=}\FunctionTok{mean}\NormalTok{(logmpg), }\AttributeTok{col =} \StringTok{"red"}\NormalTok{)}
+\FunctionTok{abline}\NormalTok{(}\AttributeTok{v=}\FunctionTok{median}\NormalTok{(logmpg), }\AttributeTok{col =} \StringTok{"green"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{eda_mtcars_files/figure-latex/unnamed-chunk-6-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{skewness}\NormalTok{(logmpg)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] -0.02241292
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{kurtosis}\NormalTok{(logmpg)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 2.64908
+\end{verbatim}
+
+La trasformazione logaritmica sembra migliorare l'andamento della
+densità di mpg, visto che ne aumenta sensibilmente la simmetria a
+discapito di una leggera diminuzione dell' indice di curtosi.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mtcars}\SpecialCharTok{$}\NormalTok{logmpg }\OtherTok{\textless{}{-}}\NormalTok{ logmpg}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{le-altre-variabili}{%
+\subsubsection{Le altre variabili}\label{le-altre-variabili}}
+
+\hypertarget{istogrammi-e-barplot-delle-variabili}{%
+\subsubsection{Istogrammi e barplot delle
+variabili}\label{istogrammi-e-barplot-delle-variabili}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#par(mfrow=c(2, 5))}
+
+\FunctionTok{barplot}\NormalTok{(}\FunctionTok{table}\NormalTok{(mtcars[, }\StringTok{"cyl"}\NormalTok{]), }\AttributeTok{xlab =} \StringTok{"Numero di cilindri"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{eda_mtcars_files/figure-latex/unnamed-chunk-8-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{hist}\NormalTok{(mtcars}\SpecialCharTok{$}\NormalTok{disp, }\AttributeTok{breaks =} \DecValTok{10}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{eda_mtcars_files/figure-latex/unnamed-chunk-8-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{hist}\NormalTok{(mtcars}\SpecialCharTok{$}\NormalTok{hp, }\AttributeTok{breaks =} \DecValTok{10}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{eda_mtcars_files/figure-latex/unnamed-chunk-8-3.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{hist}\NormalTok{(mtcars}\SpecialCharTok{$}\NormalTok{drat, }\AttributeTok{breaks =} \DecValTok{10}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{eda_mtcars_files/figure-latex/unnamed-chunk-8-4.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{hist}\NormalTok{(mtcars}\SpecialCharTok{$}\NormalTok{wt, }\AttributeTok{breaks =} \DecValTok{10}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{eda_mtcars_files/figure-latex/unnamed-chunk-8-5.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{hist}\NormalTok{(mtcars}\SpecialCharTok{$}\NormalTok{qsec, }\AttributeTok{breaks =} \DecValTok{10}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{eda_mtcars_files/figure-latex/unnamed-chunk-8-6.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{barplot}\NormalTok{(}\FunctionTok{table}\NormalTok{(mtcars[, }\StringTok{"vs"}\NormalTok{]), }\AttributeTok{xlab =} \StringTok{"vs"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{eda_mtcars_files/figure-latex/unnamed-chunk-8-7.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{barplot}\NormalTok{(}\FunctionTok{table}\NormalTok{(mtcars[, }\StringTok{"am"}\NormalTok{]), }\AttributeTok{xlab =} \StringTok{"am"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{eda_mtcars_files/figure-latex/unnamed-chunk-8-8.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{barplot}\NormalTok{(}\FunctionTok{table}\NormalTok{(mtcars[, }\StringTok{"gear"}\NormalTok{]), }\AttributeTok{xlab =} \StringTok{"gear"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{eda_mtcars_files/figure-latex/unnamed-chunk-8-9.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{barplot}\NormalTok{(}\FunctionTok{table}\NormalTok{(mtcars[, }\StringTok{"carb"}\NormalTok{]), }\AttributeTok{xlab =} \StringTok{"carb"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{eda_mtcars_files/figure-latex/unnamed-chunk-8-10.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#par(mfrow=c(1,1))}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{relazioni-tra-le-variabili}{%
+\subsubsection{Relazioni tra le
+variabili}\label{relazioni-tra-le-variabili}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{8}\NormalTok{, }\DecValTok{9}\NormalTok{, }\DecValTok{10}\NormalTok{)) \{}
+  \FunctionTok{boxplot}\NormalTok{(mtcars}\SpecialCharTok{$}\NormalTok{logmpg}\SpecialCharTok{\textasciitilde{}}\NormalTok{mtcars[, i], }\AttributeTok{xlab =} \FunctionTok{names}\NormalTok{(mtcars)[i])}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{eda_mtcars_files/figure-latex/unnamed-chunk-9-1.pdf}
+\includegraphics{eda_mtcars_files/figure-latex/unnamed-chunk-9-2.pdf}
+\includegraphics{eda_mtcars_files/figure-latex/unnamed-chunk-9-3.pdf}
+\includegraphics{eda_mtcars_files/figure-latex/unnamed-chunk-9-4.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \FunctionTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{4}\NormalTok{, }\DecValTok{5}\NormalTok{, }\DecValTok{6}\NormalTok{, }\DecValTok{7}\NormalTok{, }\DecValTok{11}\NormalTok{)) \{}
+  \FunctionTok{plot}\NormalTok{(mtcars}\SpecialCharTok{$}\NormalTok{logmpg}\SpecialCharTok{\textasciitilde{}}\NormalTok{mtcars[, i], }\AttributeTok{xlab =} \FunctionTok{names}\NormalTok{(mtcars)[i])}
+  \FunctionTok{lines}\NormalTok{(}\FunctionTok{lowess}\NormalTok{(mtcars}\SpecialCharTok{$}\NormalTok{logmpg}\SpecialCharTok{\textasciitilde{}}\NormalTok{mtcars[, i]))}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{eda_mtcars_files/figure-latex/unnamed-chunk-9-5.pdf}
+\includegraphics{eda_mtcars_files/figure-latex/unnamed-chunk-9-6.pdf}
+\includegraphics{eda_mtcars_files/figure-latex/unnamed-chunk-9-7.pdf}
+\includegraphics{eda_mtcars_files/figure-latex/unnamed-chunk-9-8.pdf}
+\includegraphics{eda_mtcars_files/figure-latex/unnamed-chunk-9-9.pdf}
+\includegraphics{eda_mtcars_files/figure-latex/unnamed-chunk-9-10.pdf}
+Sembra esserci una forte correlazione lineare tra log(mpg) e cyl, vs, am
+e wt. Anche per le variabili hp, disp e drat sembra esserci
+correlazione, ma non di tipo lineare.
+
+Verifichiamo le correlazioni con gli indici di Pearson e Spearman
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cor}\NormalTok{(mtcars}\SpecialCharTok{$}\NormalTok{logmpg, mtcars}\SpecialCharTok{$}\NormalTok{cyl, }\AttributeTok{method =} \StringTok{"pearson"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] -0.8546921
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cor}\NormalTok{(mtcars}\SpecialCharTok{$}\NormalTok{logmpg, mtcars}\SpecialCharTok{$}\NormalTok{wt, }\AttributeTok{method =} \StringTok{"pearson"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] -0.8930611
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# ha senso calcolare la correlazione su variabili categoriali?}
+\CommentTok{\#cor(mtcars$logmpg, as.numeric(mtcars$vs), method = "pearson")}
+\CommentTok{\#cor(mtcars$logmpg, as.numeric(mtcars$vs), method = "spearman")}
+\CommentTok{\#cor(mtcars$logmpg, as.numeric(mtcars$am), method = "pearson")}
+\CommentTok{\#cor(mtcars$logmpg, as.numeric(mtcars$am), method = "spearman")}
+
+\FunctionTok{cor}\NormalTok{(mtcars}\SpecialCharTok{$}\NormalTok{logmpg, mtcars}\SpecialCharTok{$}\NormalTok{hp, }\AttributeTok{method =} \StringTok{"pearson"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] -0.7894727
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cor}\NormalTok{(mtcars}\SpecialCharTok{$}\NormalTok{logmpg, mtcars}\SpecialCharTok{$}\NormalTok{hp, }\AttributeTok{method =} \StringTok{"spearman"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] -0.8946646
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cor}\NormalTok{(mtcars}\SpecialCharTok{$}\NormalTok{logmpg, mtcars}\SpecialCharTok{$}\NormalTok{disp, }\AttributeTok{method =} \StringTok{"pearson"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] -0.8804044
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cor}\NormalTok{(mtcars}\SpecialCharTok{$}\NormalTok{logmpg, mtcars}\SpecialCharTok{$}\NormalTok{disp, }\AttributeTok{method =} \StringTok{"spearman"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] -0.9088824
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cor}\NormalTok{(mtcars}\SpecialCharTok{$}\NormalTok{logmpg, mtcars}\SpecialCharTok{$}\NormalTok{drat, }\AttributeTok{method =} \StringTok{"pearson"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.6729062
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cor}\NormalTok{(mtcars}\SpecialCharTok{$}\NormalTok{logmpg, mtcars}\SpecialCharTok{$}\NormalTok{drat, }\AttributeTok{method =} \StringTok{"spearman"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.6514555
+\end{verbatim}
+
+Il valore degli indici conferma alcune impressioni, ma ne modifica
+altre:
+
+\begin{itemize}
+\item
+  la forte correlazione lineare (negativa) è confermata per cyl e wt,
+\item
+  il confronto tra l'indice di pearson e spearman per hp e disp
+  suggerisce la presenza di correlazioni tra queste due variabili e
+  logmpg, ma non di tipo lineare (probabilmente sono inversamente
+  proporzionali),
+\item
+  per quanto riguarda drat, il confronto tra i due indici suggerisce una
+  correlazione lineare in contrasto con l'ipotesi fatta in precedenza
+\end{itemize}
+
+Proviamo a trasformare hp e wt
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(mtcars}\SpecialCharTok{$}\NormalTok{logmpg}\SpecialCharTok{\textasciitilde{}}\FunctionTok{I}\NormalTok{(}\DecValTok{1}\SpecialCharTok{/}\NormalTok{mtcars}\SpecialCharTok{$}\NormalTok{hp))}
+\FunctionTok{lines}\NormalTok{(}\FunctionTok{lowess}\NormalTok{(mtcars}\SpecialCharTok{$}\NormalTok{logmpg}\SpecialCharTok{\textasciitilde{}}\FunctionTok{I}\NormalTok{(}\DecValTok{1}\SpecialCharTok{/}\NormalTok{mtcars}\SpecialCharTok{$}\NormalTok{hp)))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{eda_mtcars_files/figure-latex/unnamed-chunk-11-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cor}\NormalTok{(mtcars}\SpecialCharTok{$}\NormalTok{logmpg, }\DecValTok{1}\SpecialCharTok{/}\NormalTok{mtcars}\SpecialCharTok{$}\NormalTok{hp, }\AttributeTok{method =} \StringTok{"pearson"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.8366077
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(mtcars}\SpecialCharTok{$}\NormalTok{logmpg}\SpecialCharTok{\textasciitilde{}}\FunctionTok{I}\NormalTok{(}\DecValTok{1}\SpecialCharTok{/}\NormalTok{mtcars}\SpecialCharTok{$}\NormalTok{wt))}
+\FunctionTok{lines}\NormalTok{(}\FunctionTok{lowess}\NormalTok{(mtcars}\SpecialCharTok{$}\NormalTok{logmpg}\SpecialCharTok{\textasciitilde{}}\FunctionTok{I}\NormalTok{(}\DecValTok{1}\SpecialCharTok{/}\NormalTok{mtcars}\SpecialCharTok{$}\NormalTok{wt)))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{eda_mtcars_files/figure-latex/unnamed-chunk-11-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cor}\NormalTok{(mtcars}\SpecialCharTok{$}\NormalTok{logmpg, }\DecValTok{1}\SpecialCharTok{/}\NormalTok{mtcars}\SpecialCharTok{$}\NormalTok{wt, }\AttributeTok{method =} \StringTok{"pearson"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.8642357
+\end{verbatim}
+
+I grafici e il valore degli indici di pearson confermano la bontà delle
+due trasformate.
+
+\end{document}
