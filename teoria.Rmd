@@ -30,7 +30,7 @@ Le principali sintesi numeriche per i dati bivariati sono, nel caso di variabili
 * il coefficente di correlazione di Pearson, per quantificare in la relazione lineare con un valore standardizzato (sempre appartenente all'intervallo [-1,1]);
 * i più generici coefficenti di Spearman e Kendal, per individuare rispettivamente le relazioni tra i ranghi e tra le coppie di osservazioni.
 
-Per le variabili categoriali invece si utilizzano i conteggi (aggregati in tabelle di contingenza, che permettono di analizzare le frequenze congiunte) oppure se si vuole usare un approccio più numerico e formale, l'indice chi-quadro (una misura della distanza tra le frequenze di una tabella di contingenza e le frequenze attese in caso di indipendenza). 
+Per le variabili categoriali invece si utilizzano i conteggi (aggregati in tabelle di contingenza, che permettono di analizzare le frequenze congiunte di ogni combinazione di livelli) oppure se si vuole usare un approccio più numerico e formale, l'indice chi-quadro (una misura della distanza tra le frequenze di una tabella di contingenza e le frequenze attese in caso di indipendenza). 
 
 
 ### Define the multiple linear regression model and highlight the basic assumptions.
@@ -50,15 +50,46 @@ Per le variabili categoriali invece si utilizzano i conteggi (aggregati in tabel
 
 ### Describe the purpose of an interval estimation procedure.
 
+Lo scopo di una procedura di stima d'intervallo è definire, per un certo valore non noto, un insieme di valori (solitamente un intervallo $[U,V]$) t.c. , con una probabilità $1-\alpha$, l'intervallo contiene il valore reale. Tale procedura si svolge partendo da dei dati (riportabili ad un modello dove la distribuzione e i quantili sono noti) e un livello di confidenza desiderato $1-\alpha$ (e.g., 95%, 99%, ecc.).
+
+Visto che si vuole ricavare un intervallo $[U,V]$ t.c. $P(U \le \theta \le V)=1-\alpha$, si immagina - ad esempio - di normalizzare (o studentizzare) i dati "centrandoli" nel valore osservato $\hat{\theta}$. A questo punto, conoscendo dove si trovano i quantili, si possono individuare i valori dell'intervallo.
+
+Se i dati sono riconducibili ad una distribuzine normale con varianza nota - ad esempio - il problema diventa $P(\hat{\theta}+z_{\alpha/2}*SE(\hat{\theta}) \le \theta  \le \hat{\theta}-z_{\alpha/2}*SE(\hat{\theta}))=1-\alpha$, , ciò si traduce nel calcolo dell'intervallo $[\hat{\theta} \pm z_{\alpha/2}*SE(\hat{\theta})]$, dato $z_{\alpha/2}$ noto. 
+
 ### Give the right statistical interpretation of an observed 95% confidence interval for an interest parameter.
 
+Se osservo un'intervallo di confidenza del 95% su un certo parametro d'interesse, vuol dire che, con una probabilità del 95%, l'intervallo selezionato contiene il valore reale ignoto del parametro.
+
+Ciò vuol dire che se ripetessi l'esperimento di individuazione dell'intervallo usando come dati un numero sufficientemente grande di campioni casuali, il 95% degli intervalli conterrebbe il varlore reale.
+
 ### Present a simple application regarding the estimation of a population mean.
+
+Si immagini di aver raccolto un campione casuale di dati numerici continui, riconducibili ad una distribuzione normale. 
+
+Per stimare la media della popolazione, si usa come stimatore la media campionaria $\bar{Y}$. Tale stimatore è consistente, non distorto, può essere approssimato con una distribuzione normale $\bar{Y} ~ N(\mu, \sigma^2/n)$ e presenta $MSE=\sigma^2/n$ (in quanto stimatore non distorto, il suo MSE equivale alla varianza). Il suo standard error è lo standard error della media $SEM=S/\sqrt{n}$ (dove $S^2$ è uno stimatore per $\sigma^2$). 
+
+Uno step successivo a tale stima potrebbe essere la stima di un intervallo di confidenza di lv. $1-\alpha$ $[\bar{y} \pm z_{\alpha/2}*SE(\bar{y})]$ (oppure $[\bar{y} \pm t_{\alpha/2}*SE(\bar{y})]$ se la varianza non è nota).
 
 ### List some useful steps in the model fitting procedure.
 
       
 ### Recall the main statistical indices and procedures for model assessment and model selection.
 
+Per valutare e confrontare modelli si possono utilizzare verifiche grafiche, indici statistici e procedure di test. Per quanto riguarda le verifiche grafiche, gli strumenti a disposizione sono il plot dei quantili osservati rispetto a quelli teorici attesi e - specialmente per i modelli di regressione - il plot dei residui (standardizzati e non) rispetto ai modelli stimati.
+
+I principali indici utilizzabili invece sono AIC (Akaike Information Criteria), BIC (Bayesian Information Criteria) e il Cross Validation Score (CV). AIC e BIC stimano la bontà di un modello bilanciando valorizzando da una parte la log-sogmiglianaza (logaritmo della funzione di densità del modello sui dati osservati e con certi parametri), dall'altra la complessità (dimensione dei parametri).  
+
+$AIC = -2l(\hat{\theta; y})+2dim(\theta)$, $BIC = -2l(\hat{\theta; y})+log(n)*dim(\theta)$
+
+Per entrambi gli indici, quando si confrontano più modelli, si tende a scegliere il modello che ottiene un punteggio più basso. Nel caso di BIC vengono penalizzati di più i modelli complessi (cioè quelli che richiedono di stimare un grande numero di parametri).
+
+Il terzo indice - CV - utilizza la tecnica della cross validation per verificare la capacità di un certo modello a stimare osservazioni non incluse nei dati di training. L'idea è di creare n modelli, ciascun modello di crea stimando $\hat\theta$ considerando tutti i dati tranne l'osservazione $y_i$. A quel punto, si calcola l'indice CV come (-) la sommatoria dei logaritmi delle densità stimate per l'oss. i dal modello i-esimo (quello che esclude $y_i$). Anche in questo caso, i migliori modelli sono quelli che ottengono punteggio più basso.
+
+Per quanto riguarda le procedure infine si hanno:
+* i test parametrici per la comparazione di modelli alternativi innestati (dove si tiene come ipotesi nulla un modello semplificato e come ipotesi alternativa un modello più sofisticato che "aggiunge" parametri/complessità al modello semplice). Tali test parametrici sono usati specialmente nei contesti della regressione lineare multivariata.
+* i test di goodness of fit, cioè test che fissano come ipotesi nulla la compatibilità del modello con i dati.
+
+[vedere se è il caso di aggiungere qualcosa su ANOVA o altro]
 
 ## Compito del 15 febbraio 2018
 
@@ -81,7 +112,7 @@ Essendo i dati campionari variabili casuali, lo stimatore è sua volta una varia
 
 Lo standard error può essere definito come una misura della precisione di una stima. A livello teorico, lo SE è la radice dell'MSE (Mean Sqare Error), che corrisponde alla media dei quadrati degli scostamenti del valore stimato da quello reale. L'MSE può anche essere visto come la somma della varianza dello stimatore e del quadrato dello scostamento del valore medio (dello stimatore) da quello reale. 
 
-$SE = \sqrt{MSE}$, con $MSE=E[ (\hat{\theta} - \theta)^2 ] = V(\hat{\theta}) + [E(\hat{\theta}) - \theta]^2$
+$SE = \sqrt{MSE}$, con $MSE=E[ (\hat{\theta} - \theta)^2 ] = V(\hat{\theta}) + [E(\hat{\theta}) - \theta]^2$ (nota: si osserva che se uno stimatore è non distorto, il suo MSE equivale alla sua varianza).
 
 Rispetto all'MSE, un vantaggio del SE è che la sua unità di misura è la stessa del valore stimato.
 
@@ -100,7 +131,12 @@ Tale proporzione stimata può essere usata poi per realizzare un modello bernoul
 ### Define the one-way and the two-way analysis of variance models and highlight the basic assumptions.
 
 
+
+
 ### Describe the statistical tests on the main effects and on the interaction effect of the factors on the mean response.
+
+
+
 
 
 ## Compito del 11 giugno 2018
@@ -112,8 +148,6 @@ Data una certa variabile numerica, si vuole farsi un'idea sulla variabilità del
 Per stimare la varianza dei dati, si ipotizza di avere a disposizione un campione dei dati; si usa quindi come stimatore la varianza campionaria corretta. Essa si calcola con la formula $S^2=\sum(Y-\bar{Y})/(n-1)$ (usando la media campionaria come stimatore per $\bar{Y}$ e applicando la divisione per $n-1$ invece che per $n$ per considerare la maggiore variabilità dei dati reali rispetto a quelli osservati). 
 
 Tale strimatore è consistente e non distorto. In caso la popolazione abbia una distribuzione normale (e il campione sia scelto da osservazioni siano indipendenti e identicamente distribuite) il rapporto tra $S^2(n-1)$ e $\sigma^2$ segue una distribuzione chi-quadro (con n gradi di libertà). 
-
-
 
 ### Introduce and discuss the topic of regression models with non-Gaussian response variables.
 
@@ -156,13 +190,45 @@ La sue principali utilità in statistica sono:
 
 ### Present a simple application regarding the estimation of the difference of the means of two independent populations.
 
+Si prenda un certo processo industriale, la cui qualità/efficenza/"bontà" si possa misurare attraverso un valore numerico continuo. Si prenda come esempio la situazione in cui si vuole introdurre un miglioramento al processo e misurarne i benefici. 
+
+Per quantificare i benefici introdotti, si esegue il processo N volte senza il miglioramento e poi M volte con il miglioramento. Tramite i due esperimenti, si costruiscono due campioni casuali di osservazioni indipendenti (e identicamente distribuite). 
+
+Come misura del miglioramento introdotto, si prende la differenza tra medie campionarie $\bar{Y} - \bar{X}$. 
+
+Si stimano per entrambi i campioni le due medie campionarie $\bar{X}$ e $\bar{Y}$. Su tali stime, ci si aspetta di avere come standard error $SEM_x=S_x/\sqrt{n}$ e $SEM_y=S_y/\sqrt{m}$. Si effettua quindi anche il calcolo per la stima di $\bar{Y} - \bar{X}$. 
+
+Nel caso in cui i due campioni abbiano varianze diverse, l'errore quadratico medio della stima corrisponde alla somma dei due MSE, quindi lo standard error della differenza si calcola con la radice della somma dei quadrati dei due stanard error precedentemente ricavati $SED = \sqrt{SEM_x^2 + SEM_y^2}$. Se i due campioni avessero le stessa varianza invece si potrebbe effettuare il calcolo con $SED = S_p \sqrt{1/n + 1/m}$ (dove $S_p^2$ è la varianza aggregata campionaria, calcolata con due gradi di libertà).
+
+
 ## Compito del 28 gennaio 2020
 
 ### Describe the purpose of a (parametric) hypothesis testing procedure.
 
+Una procedura di test d'ipotesi parametrico serve a stabilire se una certa restrizione su un parametro d'interesse è consistente con dei dati e con che confidenza si può affermare ciò.
+
+Nei test d'ipotesi parametrici, si definiscono due ipotesi su un parametro $\theta$: Un'ipotesi nulla $H0: \theta = \theta_0$ e un'alternativa $H1: \theta \ne \theta_0$ (che volendo potrebbe essere anche solo "one-sided" - e.g., $H1: \theta > \theta_0$). A questo punto, si sceglie una statistica di test adatta allo stimatore (da applicare sotto ipotesi nulla) e si ha due possibilità.
+
+* in base ad livello di significatività $\alpha$ e grazie alla conoscenza della statistica di test, si definisce una regione critica che, se contiene il valore osservato, posso rifiutare l'ipotesi nulla. 
+
+* invece che definire una regione critica, calcolo per il valore osservato una probabilità $p$ (p-value), che corrisponde alla probabilità di osservare (nella statistica test) valori più lontani di $\theta$ da $\theta_0$. Se ho un p-value sufficente 
+
 ### Define the notions of significance level, critical region and p-value.
 
+Il livello di significatività può esser visto come la probabilità $\alpha$ di incorrere in un errore di tipo 1 (rifiuto di un'ipotesi nulla $H_0$ corretta) che ritengo tollerabile. Ad esempio, se effettuo un test d'ipotesi con livello di significatività $\alpha=0.05$, vuol dire che accetto di avere una probabilità del 5% di rifiutare un'ipotesi nulla corretta.
+
+La regione critica è l'insieme dei valori del dominio di una statistica test per i quali rifiuto un'ipotesi nulla. Corrisponde all'area per i quali la probabilità (sotto ipotesi nulla) che il valore osservato (trasformato) si trovi li è uguale al livello di significatività definito. Ad esempio per un z-test, nel caso di ipotesi alternative one-sided la regione critica è l'area prima o dopo la soglia del quantile $\alpha$ (o $1-\alpha$); nel caso di ipotesi two-sided, la regione critica sono le code oltre le soglie $\pm z_\alpha$.
+
+Il p-value invece può esserre considerato come una misura della vicinanza dei dati all'ipotesi nulla. Nel dettaglio, esso rappresenta la prob. si osservare nella statistica test valori più estremi del valore osservato (cioè valori ancora più lontanti da quello dell'ipotesi nulla). Se ho un p-value grande, potrò dire che i dati non mi permettono di rifiutare l'ipotesi nulla; se invece ho un p-value piccolo, posso dire che i dati sono lontani dall'ipotesi nulla.
+
+
 ### Present a simple application concerning the testing on the equality of the means of two independent populations.
+
+Si ipotizzi di aver raccolto due campioni casuali da due popolazioni indipendenti (e.g., misurazioni numeriche continue dello stesso fenomeno su popolazioni diversi). Per confrontare le due medie, si utilizza come stima la differenza tra le medie campionarie $\bar{X}-\bar{Y}$. Si calcola quindi tale stima, assieme allo standard error $SED=S_p*\sqrt{1/n + 1/m}$ (oppure, se i due campioni sono di varianza diversa, $SED=\sqrt{SEM_x^2+ SEM_y^2}$).
+
+Per effettuare un test sull'ugualianza, si fissa l'ipotesi nulla $H_0: \bar{X}-\bar{Y}=0$ e l'ipotesi alternativa $H_0: \bar{X}-\bar{Y} \ne 0$. Si scelgie come statistica per il test una T di student (sotto ipotesi nulla $T= \frac{\bar{X}-\bar{Y}}{SED} \sim T(n+m-2)$); si ricava quindi il p-value per il valore osservato (nella differenza). 
+
+Se il p-value è inferiore ad una soglia $\alpha$ con la quale sono tranquillo, rifiuto l'ipotesi nulla.
 
 ### Discuss the crucial point of selecting the explanatory variables in multiple linear regression models.
 
@@ -171,6 +237,19 @@ La sue principali utilità in statistica sono:
 ## Compito del 18 febbraio 2020
 
 ### Describe what are the aims of Exploratory Data Analysis and present the main graphical summaries for describing the relationship between different types (namely, categorical and numerical) of variables.
+
+[...]
+
+Per quanto riguarda le relazioni tra due variabili numeriche, il miglior strumento grafico è il plot. Si mette una variabile sull'ascisse e l'altra sulle ordinate del grafico, si plottano quindi tutte le osservazioni sul piano cartesiano. Spesso è comodo sovrapporre al plot alcune sintesi grafiche aggiuntive, come ad esempio una retta di regressione lineare oppure una curva LOWESS (ottenuta applicando l'omonimo modello non parametrico) per provare ad evidenziare che tipo di relazione c'è tra i dati.
+
+Per le relazioni tra una variabile numerica e una categoriale, il principale strumento per esplorare eventuali relazioni è un grafico con più boxplot accostati. Si definisce un'asse numerica (che rappresenta la variabile numerica) e per ogni livello del fattore categoriale, si costruisce un boxplot. In questo modo si evidenzia come varia il posizionamento della variabile numerica per i diversi livelli del fattore. 
+
+Per le relazioni tra variabili categoriali, si possono usare particolari tipi di grafici come il mosaicplot. Tale grafico rappresenta ogni possibile combinazione di livelli delle due variabili con un rettangolo; i lati dei rettangoli sono propozionali alle frequenze marginali dei rispettivi livelli, l'area invece è proporzionale alla frequenza della la combinazione.
+
+Altri strumenti per rappresentare relazioni tra più di due variabili sono:
+
+* i plot in 3D o le curve di livello per tre variabili numeriche;
+* i plot con le osservazioni colorate per due variabili numeriche e una categoriale.
 
 ### Define the simple linear regression model and recall the t test on the nullity of the slope parameter, discussing its role in evaluating the model adequacy.
 
