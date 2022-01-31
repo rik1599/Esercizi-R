@@ -1,0 +1,64 @@
+---
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
+---
+Partiamo con una panoramica rapida del dataset.
+
+```{r}
+library(ISwR)
+source("./../functions.R", local = knitr::knit_global())
+data("bp.obese")
+
+bp.obese$sex <- factor(bp.obese$sex, labels = c("male", "female"))
+str(bp.obese)
+summary(bp.obese)
+```
+
+Il dataset è costituito da tre variabili, due numeriche continue (obese e bp) e una categoriale non ordinale (sex). 
+
+La variabile risposta è bp e lo scopo dell'analisi è fornire un modello di regressione
+per stabilire come il valore della pressione sistolica delle persone vari a seconda del loro
+indice di obesità e del loro sesso.
+
+### Distribuzione delle variabili
+```{r}
+numeric.graph(bp.obese, c(2, 3))
+categorical.graph(bp.obese, c(1))
+```
+#### Osservazioni
+
+-   C'è una marcata assimmetria verso destra delle variabili bp e obese
+
+-   Le curve di bp e obese sono fortemente ipernormali, avendo entrambi delle
+    curve destre molto pesanti, come è possibile vedere dai qqplot delle due variabili:
+```{r}
+qqplot.graph(bp.obese, c(2,3))
+```
+
+-   Per questi motivi, a meno di trasformazioni delle due variabili, le ipotesi di
+    normalità sono violate.
+
+-   In bp e in obese sono presenti degli outliers sui valori massimi.
+
+-   Le osservazioni sembrano essere ben distribuite tra uomini e donne
+
+### Relazioni tra variabili
+```{r}
+scatterplots.graph(response.var = 3, esplicative.vars = c(2), data = bp.obese)
+boxplots.graph(response.var = 2, esplicative.vars = c(1), data = bp.obese)
+boxplots.graph(response.var = 3, esplicative.vars = c(1), data = bp.obese)
+```
+#### Osservazioni
+
+-   Tra bp e obese sembra esserci una debole correlazione lineare.
+
+-   Sembra esserci correlazione tra obese e sex, seppur molto debole.
+
+-   I tre ouliers di obese sono tutti riferiti a soggetti di sesso femminile,
+    come confermato dal secondo boxplot. Considerata anche la distribuzione
+    tra soggetti maschili e femminili nel dataset, potrebbe essere una buona
+    idea rimuovere i tre outlier dalle osservazioni.
+
+-   Non sembra esserci una correlazione significativa tra bp e sex.

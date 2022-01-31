@@ -3,14 +3,15 @@ numeric.graph <- function(data, variables, breaks = rep(10, length(variables))) 
     par(mfrow=c(1,2))
     i=1
     name <- names(data)[var]
+    dens <- density(data[, var])
     hist(
       data[, var], 
       breaks = breaks[i], 
       probability = T, 
       xlab = name,
-      main = paste("Histogram of", name)
+      main = paste("Histogram of", name),
     )
-    lines(density(data[, var]))
+    lines(dens)
     abline(v=mean(data[, var]), col = "red")
     abline(v=median(data[, var]), col = "green")
     
@@ -21,14 +22,12 @@ numeric.graph <- function(data, variables, breaks = rep(10, length(variables))) 
   }
   
   library(moments)
-  #print("Standard errors")
-  #print(sqrt(var(abs(data[, variables]))))
   
   print("Skewness indexes")
   print(skewness(data[, variables]))
   
-  print("3 - Kurtosis indexes")
-  print(3 - kurtosis(data[, variables]))
+  print("Kurtosis indexes - 3")
+  print(kurtosis(data[, variables]) - 3)
 }
 
 categorical.graph <- function(data, variables) {
@@ -61,4 +60,27 @@ boxplots.graph <- function(response.var, esplicative.vars = c(), data) {
     xlab = names(data)[var]
     boxplot(data[, response.var]~data[, var], xlab = xlab, ylab = ylab)
   }
+}
+
+qqplot.graph <- function(data, variables) {
+  for (var in variables) {
+    name <- names(data)[var]
+    qqnorm(
+      data[, var], 
+      main = paste("Normality of", name), 
+      xlab = "Quantiles", ylab = "Values"
+    )
+    
+    qqline(data[, var], col = "red", lwd = 2)
+  }
+}
+
+transformResponseWithBoxCox <- function(lm.object, dataset, response.var) {
+  library(MASS)
+  boxcox(lm.object)
+  lambda <- boxcox(lm.object, plotit = F)
+  #Estrae il valore di x in corrispondenza in corrispondenza del valore massimo di y
+  lambda.max = lambda$x[which.max(lambda$y)]
+  print(paste("Ideal lambda for", response.var, ":", lambda.max))
+  return((dataset[, response.var]^lambda.max - 1)/lambda.max)
 }

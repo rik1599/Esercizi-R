@@ -1,0 +1,79 @@
+---
+output:
+  word_document: default
+  html_document: default
+---
+After fitting these linear models
+`fit1 <- lm(bp ∼ obese,data=bp.obese)`,
+`fit2 <- lm(bp ∼ obese+sex,data=bp.obese)` and
+`fit3 <- lm(bp ∼ obese*sex,data=bp.obese)`, the following outputs are
+obtained by the R function summary.
+
+```{r echo=FALSE}
+library(ISwR)
+source("./../functions.R", local = knitr::knit_global())
+fit1 <- lm(bp ~ obese,data=bp.obese)
+summary(fit1)
+```
+
+```{r}
+fit2 <- lm(bp ~ obese+sex,data=bp.obese)
+summary(fit2)
+```
+
+```{r}
+fit3 <- lm(bp ~ obese*sex,data=bp.obese)
+summary(fit3)
+```
+
+Describe how to interpret these results, and then suggest how to proceed
+with further analyses.
+
+Sono tre modelli annidati di regressione su bp.
+Tutti e tre sono caratterizzati dai valori degli indici $R^2$ estremamente bassi
+(i modelli spiegano poco la varianza nella risposta).
+
+Dal punto di vista della significatività dei parametri `fit3` è il modello peggiore
+(tutti i regressori tranne l'intercetta hanno p-value elevato), in particolare l'interazione
+tra obese e sex; mentre il migliore è `fit1`.
+
+Confrontiamo i tre modelli con ANOVA, AIC e BIC per scegliere il migliore tra `fit1` e `fit2`
+```{r}
+anova(fit1, fit2)
+AIC(fit1, fit2)
+BIC(fit1, fit2)
+```
+
+L'analisi ANOVA e la statistica AIC suggeriscono di utilizzare il modello `fit2`,
+mentre la statistica BIC è sostanzialmente uguale per entrambe.
+
+Scegliamo il modello `fit2`
+```{r}
+plot(fit2, which = 1:6)
+```
+
+Dai grafici diagnostici del modello si notano molto bene gli outliers, i quali tuttavia
+sono i punti più influenti, ma la distanza di Cook e l'effetto leva non sono troppo elevati.
+
+Risulta violata l'ipotesi di normalità dei residui dal grafico dei residui standardizzati,
+soprattutto sulle code.
+
+Considerato che in fase di EDA si erano notate un alto livello di asimmetria e curtosi per le
+variabili numeriche, introduciamo delle trasformazioni.
+
+Calcoliamo una trasformata adeguata per bp tramite il metodo di Box Cox.
+```{r}
+bp.obese$bpT <- transformResponseWithBoxCox(fit2, bp.obese, "bp")
+fit4 <- lm(bpT~sex+obese, data = bp.obese)
+summary(fit4)
+plot(fit4)
+AIC(fit3, fit4)
+BIC(fit3, fit4)
+```
+
+La trasformazione ha permesso di rientrare nell'ipotesi di normalità dei residui
+e sia il test F del modello, sia le statistiche AIC e BIC confermano il fatto che
+`fit4` sia il modello migliore.
+
+Tuttavia il basso valore degli indici $R^2$ suggerisce il fatto che sono necessari
+ulteriori regressori per giungere a un modello soddisfacente.

@@ -18,7 +18,7 @@ library(printr)
 ```{r child='eda/eda_mtcars.Rmd'}
 ```
 
-```{r child='eda/analysis_mtcars.Rmd'}
+```{r child='analysis/analysis_mtcars.Rmd'}
 ```
 
 ## Compito del 13 febbraio 2017
@@ -40,36 +40,23 @@ account also the factor regressor sex. Describe how to perform a
 preliminary data analysis on this dataframe, using suitable R commands
 and comment the following plot.
 
+```{r child='eda/eda_obese.Rmd'}
+```
+
+
 ![](img/img1.png)
-### Analisi preliminare
 
-Partiamo con una panoramica rapida del dataset.
+Il grafico mette in relazione la variabile bp con obese, categorizzando i dati sulla
+base della variabile sex e, per ogni categoria, ne disegna la retta di regressione
+lineare.
 
-```{r}
-help(bp.obese)
-summary(bp.obese)
+Dalle rette di regressione sembra che gli uomini abbiano dei valori di pressione
+mediamente più alti rispetto alle donne, tuttavia la crescità di questo valore è
+più lenta.
+
+```{r child='analysis/analysis_obese.Rmd'}
 ```
 
-Il dataset è costituito da tre variabili, due numeriche continue (obese e bp) e una categoriale non ordinale (sex). 
-
-After fitting these linear models
-`fit1 <- lm(bp ∼ obese,data=bp.obese)`,
-`fit2 <- lm(bp ∼ obese+sex,data=bp.obese)` and
-`fit3 <- lm(bp ∼ obese*sex,data=bp.obese)`, the following outputs are
-obtained by the R function summary.
-
-```{r echo=FALSE}
-fit1 <- lm(bp ~ obese,data=bp.obese)
-fit2 <- lm(bp ~ obese+sex,data=bp.obese)
-fit3 <- lm(bp ~ obese*sex,data=bp.obese)
-
-summary(fit1)
-summary(fit2)
-summary(fit3)
-```
-
-Describe how to interpret these results, and then suggest how to proceed
-with further analyses.
 
 ## Compito del 15 febbraio 2018
 

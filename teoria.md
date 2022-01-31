@@ -16,7 +16,7 @@ Principali indici per variabili bivariate:
 
 -   **coefficiente di correlazione di Pearson**: misura di correlazione
     lineare standardizzata $$ r_{xy} = \frac{s_{xy}}{s_x s_y} $$
-    $r_{xy} \in [-1, 1]$. Se $|r\_{xy}| \approx 1$ allora c'è una
+    $r_{xy} \in [-1, 1]$. Se $|r_{xy}| \approx 1$ allora c'è una
     forte correlazione lineare tra le variabili.
 
 -   **coefficiente di correlazione di rango di Spearman** e
@@ -28,7 +28,7 @@ Principali indici per variabili bivariate:
 In un modello di regressione lineare multiplo il valore della variabile
 risposta $Y = (Y_1, \dots, Y_n)$ ($n$ è il numero di osservazioni)
 dipende da due o più regressori $X_1,\dots,X_p$ definito come
-$$ y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x{i_2} + \dots + \beta_p x_{ip} + \epsilon_i $$
+$$ y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i_2} + \dots + \beta_p x_{ip} + \epsilon_i $$
 Assunzioni del modello:
 
 -   I termini di errore sono **normalmente distribuiti**
@@ -41,7 +41,7 @@ Assunzioni del modello:
 
     -   normalmente distribuite
 
-    -   con varianza costante $\sigma^2$
+    -   con varianza costante $\sigma^2$ (omoschedasticità)
 
 -   valore medio definito come combinazione lineare dei regressori
     $$ E(Y_i) = \beta_0 + \beta_1 x_{i1} + \beta_2 x{i_2} + \dots + \beta_p x_{ip} $$
@@ -437,10 +437,51 @@ Trovato il primo vettore dei coefficienti $\phi_{i1}$ il risultati delle combina
 
 La procedura è poi interabile fino a ottenere $\min(n-1, p)$ componenti, ad ogni iterazione si richiede di massimizzare la varianza non correlata alle componenti precedenti.
 
-### (Cap 7) Proporzione della varianza
+### (Cap 7) Proporzione della varianza spiegata
+Aiuta a "capire" quante componenti principali calcolare.
+
+La proporzione della varianza spiegata dalla $s$-esima componente è il rapporto tra la varianza campionaria degli scores e la somma delle varianze campionarie delle singole variabili di partenza che compongono la componente.
+
+Sommando tra loro le varie proporzioni si ottiene la cumulata della varianza principale spiegata.
 
 ### (Cap 7) Algoritmi di clustering
+Esistono tre tipi di algoritmi di clustering:
+
+-   Hierarchical clustering: costruisce una gerarchia di cluster sui dati. Ne esistono di due tipi: agglomerative (di tipo bottom-up) e divisive (top-down) 
+    Producono un output grafico chiamato **dendrogramma**. L'appartenenza di uno o più sottogruppi a una certa gerarchia avviene generalizzando il concetto di dissimilarità tra osservazioni a quello tra gruppi (criterio di collegamento).
+    I cluster vengono individuati tagliando il dendrogramma a una certa "altezza", ossia la distanza a cui vengono fusi due sottogruppi.
+
+-   Partitioning clustering: partiziona i dati ottimizzando l'allocazione di questi ultimi nei cluster.
+    
+    *   Algoritmo *K-means*: assegno un cluster a caso per ogni osservazione e finchè gli assegnamenti non cambiano calcolo il centroide (il vettore con le coordinate del punto medio) di ogni cluster e ad ogni osservazione assegno il cluster più vicino secondo la distanza euclidea.
+
+    *   Algoritmo *K-medoids*: variante del *K-means* solo che invece di calcolare i centroidi, vengono scelti dei punti per ogni dataset
+
+-   Model-based clustering: partiziona i dati in base a dei modelli.
 
 ### (Cap 7) Misure di dissimilarità
+Misurano la "somiglianza" (in termini numerici) tra le osservazioni. Hanno le seguenti proprietà: non negatività, identità degli indiscernibili (vale 0 se e solo se misuro la distanza tra un punto e sé stesso), simmetria, rispetto della disuguaglianza triangolare.
+Alcune misure di dissimilarità tra vettori:
+
+-   Distanza euclidea
+
+-   Distanza di manhattan: somma delle differenze in valore assoluto delle singole componenti di due vettori
+
+-   Distanza massima: massimo della differenza in valore assoluto delle componenti di due vettori
+
+-   Distanza binaria/Distanza di Jaccard: per vettori binari
+
+-   Distanza  di Hamming: per stringhe
+
+-   Dissimilarità di Gower
 
 ### (Cap 7) Alcune problematiche sul clustering
+Il risultato di un operazione di clustering dipende sostanzialmente da tre fattori:
+
+-   la standardizzazione delle variabili,
+
+-   la scelta dei criteri di dissimilarità e/o di collegamento,
+
+-   l'altezza a cui tagliare il dendrogramma e/o il numero di partizioni.
+
+In generale i metodi di clustering non sono molto robusti alle perturbazioni sui dati (outliers)
