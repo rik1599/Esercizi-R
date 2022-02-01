@@ -1,19 +1,8 @@
----
-title: "Funzioni"
-author: "Emanuele Lena - 142411@uniud"
-date: "1/2/2022"
-output: html_document
----
+## ----setup, include=FALSE-----------------------------------------------------------------------
+knitr::opts_chunk$set(echo = TRUE)
 
-install.packages("epitools")
-install.packages("moments")
-install.packages("fBasics")
 
-## Tool per l'EDA
-
-### Funzioni analisi univariata
-
-```{r funzione-summary-categoriali}
+## -----------------------------------------------------------------------------------------------
 summary_categorial <- function(variable, data=NULL, stats=F, plots=T, compact=T) {
   
   if (!is.null(data)) {
@@ -52,10 +41,9 @@ summary_categorial <- function(variable, data=NULL, stats=F, plots=T, compact=T)
   }
 }
 
-```
 
 
-```{r funzione-summary-numeriche}
+## -----------------------------------------------------------------------------------------------
 summary_numerical <- function(variable, data=NULL, stats=F, plots=T, normCurve=T, compact=T) {
   
   if (!is.null(data)) {
@@ -111,10 +99,9 @@ summary_numerical <- function(variable, data=NULL, stats=F, plots=T, normCurve=T
     par(mfrow=c(1,1))
   }
 }
-```
 
 
-```{r funzione-controllo-normalita}
+## -----------------------------------------------------------------------------------------------
 normality_check <- function(variable, data=NULL, stats=F, normTest=F, statsTest=F, plots=T, compact=T) {
   
   
@@ -169,12 +156,9 @@ normality_check <- function(variable, data=NULL, stats=F, normTest=F, statsTest=
     par(mfrow=c(1,1))
   }
 }
-```
 
 
-### Analisi mutlivariata
-
-```{r funzione-correlazione-num-num}
+## -----------------------------------------------------------------------------------------------
 correlation_check_num <- function(x, y, data=NULL, 
                                   stats=F, statsTest=F, 
                                   whichStats=c("pearson", "kendal"), 
@@ -217,9 +201,9 @@ correlation_check_num <- function(x, y, data=NULL,
     lines(lowess(y~x), col="black")
   }
 }
-```
 
-```{r funzione-correlazione-fattore-numero}
+
+## -----------------------------------------------------------------------------------------------
 correlation_check_numfactor <- function(xfactor, y, data=NULL, stats=F, plots=T) {
   
   if (!is.null(data)) {
@@ -255,9 +239,9 @@ correlation_check_numfactor <- function(xfactor, y, data=NULL, stats=F, plots=T)
   }
   
 }
-```
 
-```{r funzione-correlazione-fattore-fattore}
+
+## -----------------------------------------------------------------------------------------------
 correlation_check_categorial <- function(x, y, data=NULL, stats=F, statsTest=F, plots=T) {
   
   if (!is.null(data)) {
@@ -292,9 +276,4 @@ correlation_check_categorial <- function(x, y, data=NULL, stats=F, statsTest=F, 
     mosaicplot(table(x, y), main=paste(yname, "~", xname), color = T)
   }
 }
-```
-
-
-
-
 

@@ -1,0 +1,204 @@
+---
+title: "Compito 01 Feb 2017"
+author: "Emanuele Lena - 142411@uniud"
+date: "1/2/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r}
+knitr::knit('Funzioni.Rmd')
+```
+
+
+
+# Compito del 1 febbraio 2017
+
+Let us consider the dataframe mtcars, which comprises the fuel
+consumption and 10 aspects of design and performance for 32 automobiles
+(1970s models). The help file is given below
+
+```{r echo=FALSE, printr.help.sections="format"}
+help(mtcars)
+```
+
+Describe how to perform a preliminary data analysis on this dataframe,
+using suitable R commands.
+
+## EDA 
+
+Il dataset mtcars è costituito da 32 osservazioni e 10 variabili. 
+
+```{r}
+nrow(mtcars)
+summary(mtcars)
+```
+
+* mpg, disp, hp, drat, wt, qsec sono certamente variabili numeriche continue; 
+* vs, am sono variabili categoriali binarie; 
+
+```{r}
+mtcars2 <- mtcars
+mtcars2$vs <- factor(mtcars2$vs, labels = c("automatic", "manual"))
+mtcars2$am <- factor(mtcars2$am, labels = c("V-shaped", "straight"))
+
+```
+
+* cyl, gear, carb sono di fatto variabili numeriche discrete intere, ma potrebbero essere interpretate più come variabili categoriali (ordinali).
+
+```{r}
+mtcars2$cyl <- factor(mtcars2$cyl)
+mtcars2$gear <- factor(mtcars2$gear)
+mtcars2$carb <- factor(mtcars2$carb)
+
+```
+
+```{r}
+summary(mtcars2)
+```
+
+
+
+```{r}
+for (v in c("mpg", "disp", "hp", "drat", "wt", "qsec")) {
+  summary_numerical(v, data=mtcars2)
+}
+
+```
+
+Delle variabili numeriche del dataset, nessuna ha una distribuzione riconducibile ad una normale, in quanto tutte presentano qualche forma di assimmetria e code pesanti (e/o outlyer).
+
+qsec, se non fosse per alcuni outlyer sulle code sarebbe abbastanza normale. 
+
+disp e drat presentano una curva di densità con due picchi distinti (disp. in particolare).
+
+
+```{r}
+normality_check(mtcars2$mpg, stats=T, statsTest = T, normTest = T)
+```
+
+La variabile risposta mpg ad esempio presenta una lieve assimmetria destra e code molto leggeri. Dai test sulle statistiche però risulta che non ci siano abbastanza informazioni per rifiutare l'ipotesi di normocurtosi, e che le prove a sostegno dell'assimmetria siano bassi.
+
+Nel confronto con i quantili teorici di una distrib normale, si oss. forti scostamenti sulle code.
+
+Forse è il caso di considerare una trasformata.
+
+
+```{r}
+for (v in c("cyl", "gear", "carb")) {
+  summary_categorial(v, data=mtcars2)
+  # print("--------------------------------------")
+  # print("")
+}
+
+
+for (v in c("vs", "am")) {
+  summary_categorial(v, data=mtcars2)
+
+}
+
+```
+
+Per nessuna delle variabili categoriali ordinali si osserva una distribuzione uniforme. Un discorso analogo si può fare anche per le variabili binarie.
+
+```{r}
+
+par(mfrow=c(2,3))
+
+for (v in c("disp", "hp", "drat", "wt", "qsec")) {
+  correlation_check_num(v, "mpg", data=mtcars2)
+}
+
+par(mfrow=c(1,1))
+
+
+
+par(mfrow=c(2,3))
+
+for (v in c("cyl", "gear", "carb", "vs", "am")) {
+  correlation_check_numfactor(v, "mpg", data=mtcars2)
+}
+
+par(mfrow=c(1,1))
+
+```
+
+Per le variabili numeriche disp, hp, drat e wt si osservano correlazioni abbastanza forti con mpg, ma forse non di tipo lineare. Per disp, hp e wt in particolare si suggerisce di valutare delle trasformate. Per drat si osserva maggiore propensione alla linearità ma anche maggiore variabilità. 
+
+La relazione tra mpg e qsec sembra incece essere piuttosto strana. Probabilmente c'è correlazione lineare ma anche molta variabilità.
+
+Tutti i fattori sembrano avere un qualche tipo di influenza su mpg. Cyl in particolare sembra avere un'influenza di tipo lineare, pertanto forse sarebbe opportuno tornare a valutarlo come una variabile numerica discreta. Discorso analogo (anche se "rovinato" dai valori estremi) per carb.
+
+## Analisi 
+
+After fitting the model `fit <- lm(mpg ∼ disp + hp + wt + drat, data=mtcars)`, the following outputs are obtained by the R commands `summary(fit)` and `plot(fit)`, respectively. Describe how to interpret these results, and then suggest how to proceed with further analyses.
+
+```{r}
+fit <- lm(mpg ∼ disp + hp + wt + drat, data=mtcars)
+
+```
+
+```{r}
+summary(fit)
+```
+
+* l'intercetta sembra avere un ruolo molto importante nella spiegazione della risposta.
+
+* I coeffienti hp e wt hanno ottenuto un p-value discreto nella statistica test; è chiaro che tali coef. contribusiscano a spiegare, ma penso che ci sia margine di miglioramento.
+
+* disp ha ottenuto un p-value decisamente troppo alto. Prima di scartarlo definitivamente, suggerirei di valutare una sua trasformazione. Anche per drat si può fare un discorso analogo.
+
+* Si osserva, tutto sommato, un basso standard error sui residui (anche in confronto alla dev. std della risposta).
+
+```{r}
+sd(mtcars$mpg)
+```
+
+
+* Il coefficente $R^2$ - sia nella sua versione normale che in quella corretta - indicano che una buona parte della varianza della risposta è spiegata dal modello (più dell'80%).
+
+* Dal p-value ottenuto per la statistica F, si può dire che il modello contribuisce a spiegare la varianza della variabile risposta.
+
+```{r}
+
+par(mfrow=c(2,3))
+plot(fit, which = (1:6))
+par(mfrow=c(1,1))
+```
+
+* dal grafico dei residui, si osserva la presenza di una strana relazione tra i residui e i valori stimati; in particolare, per i valori centrali di mpg si osservano residui contenuti o negativi, per le code invece si osservano alcuni residui particolarmente alti.
+
+* dal confronto con i quantili teorici, si notano importanti discostamenti sulle code.
+
+* dal grafico dei residui standardizzati, si osserva una variabilità tutto sommato uniforme, che aumenta leggemente sulle code.
+
+* nessun punto presenta una distanza di cook elevata in senso assoluto, detto ciò ci sono almeno due punti con distanza di cook superiore a quella degli altri. Tali punti probabilmente sono leve, detto ciò non si consiglia di rimuoverli dal modello, vista la dimensione contenuta dei dati d'addestramento.
+
+
+Per proseguire si suggersice di:
+
+* valutare per tutti e quattro i regressori numerici scale differenti, in quanto durante l'EDA si sono evidenziate relazioni forti ma non di tipo strettamente lineare. 
+
+
+```{r}
+par(mfrow=c(2,3))
+
+for (v in c("disp", "hp", "drat", "wt")) {
+  correlation_check_num(v, "mpg", data=mtcars2, stats = T, statsTest = T)
+}
+
+par(mfrow=c(1,1))
+```
+
+* valutare di introdurre nel modello anche alcuni fattori. In particolare, si suggerisce di sperimentare con cyl.
+
+* una volta individuate le scale più corrette, provare a creare e confrontare diversi modelli più o meno sofisticati (effettuando confronti con ANOVA e con i criteri AIC e BIC). Nel processo, si suggerisce di confrontarsi con un esperto del settore (e di estendere l'EDA) per individuare eventuali collinearità.
+
+
+
+

@@ -13,7 +13,8 @@ install.packages("fBasics")
 
 ### Funzioni analisi univariata
 
-```{r funzione-summary-categoriali}
+
+```r
 summary_categorial <- function(variable, data=NULL, stats=F, plots=T, compact=T) {
   
   if (!is.null(data)) {
@@ -51,11 +52,11 @@ summary_categorial <- function(variable, data=NULL, stats=F, plots=T, compact=T)
     par(mfrow=c(1, 1))
   }
 }
-
 ```
 
 
-```{r funzione-summary-numeriche}
+
+```r
 summary_numerical <- function(variable, data=NULL, stats=F, plots=T, normCurve=T, compact=T) {
   
   if (!is.null(data)) {
@@ -114,7 +115,8 @@ summary_numerical <- function(variable, data=NULL, stats=F, plots=T, normCurve=T
 ```
 
 
-```{r funzione-controllo-normalita}
+
+```r
 normality_check <- function(variable, data=NULL, stats=F, normTest=F, statsTest=F, plots=T, compact=T) {
   
   
@@ -174,7 +176,8 @@ normality_check <- function(variable, data=NULL, stats=F, normTest=F, statsTest=
 
 ### Analisi mutlivariata
 
-```{r funzione-correlazione-num-num}
+
+```r
 correlation_check_num <- function(x, y, data=NULL, 
                                   stats=F, statsTest=F, 
                                   whichStats=c("pearson", "kendal"), 
@@ -219,7 +222,8 @@ correlation_check_num <- function(x, y, data=NULL,
 }
 ```
 
-```{r funzione-correlazione-fattore-numero}
+
+```r
 correlation_check_numfactor <- function(xfactor, y, data=NULL, stats=F, plots=T) {
   
   if (!is.null(data)) {
@@ -257,7 +261,8 @@ correlation_check_numfactor <- function(xfactor, y, data=NULL, stats=F, plots=T)
 }
 ```
 
-```{r funzione-correlazione-fattore-fattore}
+
+```r
 correlation_check_categorial <- function(x, y, data=NULL, stats=F, statsTest=F, plots=T) {
   
   if (!is.null(data)) {
