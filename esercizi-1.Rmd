@@ -86,12 +86,15 @@ rbinom.
 
 ### Codice n°1
 ```{r eval=FALSE}
-par(mfrow=c(2,2))
-xx<-seq(0,10,1)
+par(mfrow=c(2,2)) # grafici disposti a quadrato 2x2
+xx<-seq(0,10,1) # Vettori di numeri da 0 a 10
+# grafico della densità di una distribuzione binomiale con parametri n=10 e p=0.2
 plot(xx,dbinom(xx,10,0.2),pch=19,ylim=c(0,0.5),
       cex.axis=1.5,xlab=" ",ylab=" ",main="A) n=10, p=0.2") # Step 3
+# disegna un segmento tra il punto (0,0) e (0,10) - evidenzia il supporto.
 segments(0,0,10,0,lwd=2)
 ```
+Disegna il grafico della densità per una v.c. binomiale con n=10 e p=0.2
 
 ### Codice n°2
 ```{r eval=FALSE}
@@ -99,6 +102,7 @@ plot(xx,dbinom(xx,10,0.5),pch=19,ylim=c(0,0.5),lwd=2,
       cex.axis=1.5,xlab=" ",ylab=" ",main="B) n=10, p=0.5") # Step 3
 segments(0,0,10,0,lwd=2)
 ```
+Come il codice 1, ma con p=0.5
 
 ### Codice n°3
 ```{r eval=FALSE}
@@ -106,6 +110,7 @@ plot(xx,dbinom(xx,10,0.8),pch=19,ylim=c(0,0.5),lwd=2,
       cex.axis=1.5,xlab=" ",ylab=" ",main="C) n=10, p=0.8") # Step 3
 segments(0,0,10,0,lwd=2)
 ```
+Come il codice 1, ma con p=0.8
 
 ### Codice n°4
 ```{r eval=FALSE}
@@ -115,6 +120,12 @@ plot(xx,dbinom(xx,20,0.5),pch=19,ylim=c(0,0.5),lwd=2,
 segments(0,0,20,0,lwd=2)
 par(mfrow=c(1,1))
 ```
+Come il codice 1, ma con n=20 e p=0.5.
+
+`dbinom`: funzione per il calcolo della f.d.p. per una v.c. con distribuzione binomiale
+`pbinom`: funzione per il calcolo della funzione di ripartizione per una v.c. con distribuzione binomiale
+`qbinom`: funzione per il calcolo dei quantili di una v.c. con distribuzione binomiale
+`rbinom`: funzione per l'estrazione di un campione statistico random da una distribuzione binomiale
 
 ## Compito del 11 giugno 2018
 Write an R code to analyze the behavior of the sampling distribution of the sample variance, as
@@ -122,6 +133,30 @@ the sample size increases. Consider 1000 simulated random samples of dimension 2
 a normal distribution with mean=1 and sd=1.
 ```{r eval=FALSE}
 # Da inserire
+var25 <- NULL
+var50 <- NULL
+var100 <- NULL
+
+for (i in 1:1000) {
+  var25 <- c(var(rnorm(25, 1, 1))*9/10, var25)
+  var50 <- c(var(rnorm(50, 1, 1))*9/10, var50)
+  var100 <- c(var(rnorm(100, 1, 1))*9/10, var100)
+}
+
+plot(density(var25))
+plot(density(var50))
+plot(density(var100))
+```
+```{r}
+xx <- rnorm(1000000, 1, 1)
+
+for (size in c(25, 50, 100)) {
+  sampvar <- NULL
+  for (i in 1:1000) {
+    sampvar <- c(sampvar, var(sample(xx, size, replace = T)))
+  }
+  plot(density(sampvar), main = paste("n=", size))
+}
 ```
 
 ## Compito del 4 febbraio 2019
@@ -131,11 +166,11 @@ and a Principal Component Analysis procedure is applied.
 
 ### Codice n°1
 ```{r eval=FALSE}
-obj <- princomp(USArrests, cor=TRUE)
-z1 <- -obj$scores[,1]
-z2 <- -obj$scores[,2]
-phi1<--obj$loadings[,1]
-phi2<--obj$loadings[,2]
+obj <- princomp(USArrests, cor=TRUE) # Calcola le componenti principali
+z1 <- -obj$scores[,1] # Vettore degli scores della prima componente principale
+z2 <- -obj$scores[,2] # Vettore degli scores della seconda componente principale
+phi1<--obj$loadings[,1] # Vettore dei pesi della prima componente principale
+phi2<--obj$loadings[,2] # Vettore dei pesi della seconda componente principale
 ```
 
 ### Codice n°2
@@ -145,21 +180,37 @@ obj$scores<--obj$scores
 biplot(obj, xlab="1st principal component", ylab="2nd principal component",
         xlim=c(-3.5,3.5), col=c(1,2), scale=0)
 ```
+Disegna il biplot (specchiato) con le componenti principali e gli scores.
 
 ### Codice n°3
 ```{r eval=FALSE}
 par(mfrow=c(1,2), pty="s")
-plot(obj$sdev^2/4, xlab="Principal component", ylab="PVE", type='b')
-plot(cumsum(obj$sdev^2)/4, xlab="Principal component", ylab="Cumulative PVE",
+plot(obj$sdev^2/4, xlab="Principal component", ylab="PVE", type='b') # Grafico della proporzione della varianza spiegata calcolata come deviazione standard delle componenti al quadrato diviso la somma delle varianze dei singoli componenti (che è 1 perchè le variabii sono standardizzate)
+plot(cumsum(obj$sdev^2)/4, xlab="Principal component", ylab="Cumulative PVE", # Grafico della proporzione della varianza spiegata cumulata. cumsum fa la somma cumulata delle varianze
       ylim=c(0,1), type='b')
 par(mfrow=c(1,1))
 ```
+Disegna il grafico della proporzione della varianza spiegata e proporzione della
+varianza spiegata cumulata.
 
 ## Compito del 21 febbraio 2019
 Describe the R functions that can be used for model selection. Furthermore, consider the R
 commands below, describe what the code is intended to do and explain what is being calculated
 on each line. Here, dataset trees, which provides some measurements on felled black cherry trees,
 is taken into account.
+
+`anova`: funzione per l'analisi della varianza su modelli annidati. Si sceglie il modello con più
+        regressori se il p-value del test F è sufficientemente basso
+
+`AIC`: funzione per il calcolo degli indici AIC
+`BIC`: funzione per il calolo degli indici BIC
+Si sceglie il modello con statistica AIC e/o BIC più bassa
+
+`summary`: in caso di indici AIC e BIC discordanti si sceglie il modello con indici $R^2$
+          più elevati.
+          
+`drop1` e `add1`: valutano gli effetti, in termini di fit del modello, rimuovendo (o aggiungendo)
+                un regressore al modello.
 
 ```{r eval=FALSE}
 cv1 <- 0
@@ -180,6 +231,8 @@ for (i in 1:n) {
 cv1
 cv2
 ```
+Calcolo dell'accuratezza di due modelli di regressione lineari tramite 1-fold cross validation
+
 
 ## Compito del 28 gennaio 2020
 Consider the R commands below, describe what the code is intended to do and explain what is

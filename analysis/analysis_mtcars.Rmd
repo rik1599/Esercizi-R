@@ -3,6 +3,104 @@ output:
   word_document: default
   html_document: default
 ---
+
+Let us consider the dataframe mtcars, which comprises the fuel
+consumption and 10 aspects of design and performance for 32 automobiles
+(1970s models). The help file is given below
+
+```{r echo=FALSE, printr.help.sections="format"}
+library(moments)
+help(mtcars)
+```
+
+Describe how to perform a preliminary data analysis on this dataframe,
+using suitable R commands.
+
+### Scopo e analisi delle variabili
+
+Si vuole creare un modello statistico di regressione per analizzare i consumi 
+medi di alcuni modelli di auto presenti nel dataframe `mtcars`.
+
+La variabile risposta è `mpg` che rappresenta il numero di miglia (americane)
+percorse (in media) con un gallone di carburante.
+
+Analizziamo le variabili
+```{r}
+str(mtcars)
+```
+
+Ci sono alcune variabili da convertire
+```{r}
+mtcars$cyl <- as.integer(mtcars$cyl)
+mtcars$hp <- as.integer(mtcars$hp)
+mtcars$vs <- factor(mtcars$vs, labels = c("V-shaped", "straight"))
+mtcars$am <- factor(mtcars$am, labels = c("automatic", "manual"))
+mtcars$gear <- as.integer(mtcars$gear)
+mtcars$carb <- as.integer(mtcars$carb)
+str(mtcars)
+```
+```{r}
+summary(mtcars)
+```
+
+### Distribuzione delle variabili
+```{r}
+source("./../functions.R", local = knitr::knit_global())
+
+numeric.graph(mtcars, c(1, 3, 4, 5, 6, 7), qqplot = 1)
+categorical.graph(mtcars, c(2, 8, 9, 10, 11))
+```
+#### Osservazioni
+
+-   Non si rilevano particolari outlier se non per hp e qsec che ne hanno uno,
+    mentre wt ne presenta due molto vicini al baffo superiore.
+
+-   Per le variabili numeriche si nota una generale assimmetria verso destra
+    (più o meno accentuata a seconda della variabile in analisi).
+
+-   Gli indici di curtosi mostrano una buona normalità delle curve per quanto
+    riguarda hp, wt e mpg. 
+    
+-   Nonostante a prima vista qsec sembra la variabile migliore dal punto di vista della
+    simmetria e della curtosi, i valori di questi indici sono probabilmente
+    influenzati dall'outlier
+
+-   Tra le variabili categoriali si può notare, in generale, una buona distribuzione
+    di queste ultime nel dataset.
+
+-   Discorso a parte vale per carb, dove ci sono due valori (estremi) con un 
+    campione ciascuno.
+    
+### Correlazioni tra variabili
+
+### Correlazioni tra la variabile risposta (mpg) e le altre variabili
+```{r}
+scatterplots.graph(1, c(3, 4, 5, 6, 7, 11), mtcars)
+boxplots.graph(1, c(2, 8, 9, 10), mtcars)
+```
+#### Osservazioni
+Dai grafici emergono le seguenti correlazioni con mpg:
+    
+*   con disp e hp, sembra esserci correlazione, ma non di tipo lineare;
+    
+*   con wt, sembra esserci una correlazione di tipo lineare;
+
+*   con drat la curva lowess suggerisce una correlazione lineare, 
+    tuttavia la distribuzione dei punti suggerisce che probabilmente è molto debole;
+
+*   con cyl, vs e am sembrano esserci correlazioni;
+    
+*   non sembrano esserci correlazioni con qsec, carb e gear;
+
+### Collinearità tra le variabili
+Visto l'elevato numero di variabili esplicative sarebbe in caso di rivolgersi a
+esperti del settore per avere le seguenti informazioni:
+
+-   quali sono le variabili di maggiore importanza,
+
+-   quali potrebbero essere le collinearità presenti tra le variabili.
+
+
 After fitting the model
 `fit <- lm(mpg ∼ disp + hp + wt + drat, data=mtcars)`, the following
 outputs are obtained by the R commands `summary(fit)` and `plot(fit)`,
@@ -55,8 +153,7 @@ plot(fit, which = c(1:6), lwd=2)
     Cook particolarmente elevati.
     
 ```{r}
-library(DAAG)
-vif(fit)
+DAAG::vif(fit)
 ```
 L'analisi VIF conferma la presenza di collinearità tra le variabili esplicative
 (per disp e wt il fattore VIF è maggiore di 5).

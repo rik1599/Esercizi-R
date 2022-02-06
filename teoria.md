@@ -15,13 +15,15 @@ Principali indici per variabili bivariate:
     variabili.
 
 -   **coefficiente di correlazione di Pearson**: misura di correlazione
-    lineare standardizzata $$ r_{xy} = \frac{s_{xy}}{s_x s_y} $$
+    lineare standardizzata tra variabili normali (o, almeno, simmetriche)
+    $$ r_{xy} = \frac{s_{xy}}{s_x s_y} $$
     $r_{xy} \in [-1, 1]$. Se $|r_{xy}| \approx 1$ allora c'è una
     forte correlazione lineare tra le variabili.
 
 -   **coefficiente di correlazione di rango di Spearman** e
     **coefficente di correlazione $\tau$ di Kendall**: misurano la
-    correlazione non-lineare tra due variabili.
+    correlazione tra due variabili in caso di distribuzioni asimmetriche 
+    o correlazioni di tipo non-lineare.
 
 ### Define the multiple linear regression model and highlight the basic assumptions.
 
@@ -33,17 +35,17 @@ Assunzioni del modello:
 
 -   I termini di errore sono **normalmente distribuiti**
     ($\epsilon_i \sim N(0, \sigma^2)$) e gli errori delle singole unità
-    sono indipendenti tra di loro
+    sono indipendenti tra di loro (ipotesi di normalità e omoschedasticità dei residui)
 
 -   Le singole variabili di risposta $Y_i$ sono:
 
-    -   indipendenti
+    -   i.i.d.
 
     -   normalmente distribuite
 
-    -   con varianza costante $\sigma^2$ (omoschedasticità)
+    -   con varianza costante $\sigma^2$
 
--   valore medio definito come combinazione lineare dei regressori
+-   valore medio definito come combinazione lineare dei regressori (ipotesi di linearità)
     $$ E(Y_i) = \beta_0 + \beta_1 x_{i1} + \beta_2 x{i_2} + \dots + \beta_p x_{ip} $$
 
 ### Describe the least squares estimators for the regression parameters and define a suitable estimator for the variance parameter.
@@ -80,7 +82,7 @@ Con $SE(\hat{Y_0}) = \sqrt{\hat{\sigma^2} + SE(\hat{\mu_0})^2}$
 
 ## Compito del 13 febbraio 2017
 
-### Describe the purpose of an interval estimation procedure.Condence intervals may be calculated for the model parameters and
+### Describe the purpose of an interval estimation procedure.Confidence intervals may be calculated for the model parameters and
 for the regression line at some given value x0 , name
 Gli intervalli di confidenza offrono delle stime molto più accurate sul reale valore del parametro ricercato rispetto a una semplice stima puntuale.
 
@@ -105,21 +107,21 @@ Dato un livello di confidenza $\alpha$ l'intervallo di confidenza per $\bar{y}$ 
 $$ \left[ \bar{y} \pm t(n-1)_{\frac{1-\alpha}{2}}SEM \right] $$
 
 ### List some useful steps in the model fitting procedure.
-1.    Esamina la distribuzione delle variabili esplicative e della variabile risposta. Cerca distribuzioni                  asimmetriche e gli outlyers.
+1.    Esamina la distribuzione delle variabili esplicative e della variabile risposta. Cerca distribuzioni asimmetriche e gli outlyers.
 
 2.    Esamina gli scatterplot di tutte le variabili esplicative e della variabile risposta.
 
-3.    Notare gli intervalli di ciascuna delle variabili del grafico a dispersione, considerando se variano                  sufficientemente per influenzare la variabile di risposta e se ciascuna delle variabili esplicative è misurata        accuratamente. 
+3.    Notare gli intervalli di ciascuna delle variabili del grafico a dispersione, considerando se variano sufficientemente per influenzare la variabile di risposta e se ciascuna delle variabili esplicative è misurata accuratamente. 
 
 4.    Nel caso in cui uno scatterplot suggerisca dei pattern non lineari, considera l'uso di trasformate
 
 5.    In caso di distribuzioni asimmetriche si consiglia di traformare la variabile risposta
 
 6.    Le coppie di variabili esplicative con un'alta correlazione tali da sembrare fornire le stesse informazioni dovrebbero essere analizzati.
-      Le informazioni di base possono suggerire quale delle due essere conservata. 
+      Le informazioni di base possono suggerire quale delle due conservare. 
       
 ### Recall the main statistical indices and procedures for model assessment and model selection.
--   Coefficiente di determinazione $R^2$ e la sua versione corretta: misura quanto la variabilità della variabile         risposta è coperta dal modello.
+-   Coefficiente di determinazione $R^2$ e la sua versione corretta: misura quanto la variabilità della variabile risposta è coperta dal modello.
 
 -   Procedure basate sui test F per la selezione di modelli annidati
     
@@ -219,6 +221,8 @@ In questo modo è possibile costruire dei modelli di regressione per ottenere il
 Le stime dei parametri di regressione nei modelli logistici misurano il "peso" che questi regressori hanno nel definire la probabilità che un evento accada o meno (al netto dei valori dei p-value sugli stessi regressori).
 
 Se un parametro ha valore positivo, allora quel regressore ha un'influenza positiva sulla probabilità (più aumenta il valore del regressore, più aumenta la probabilità che l'evento accada), altrimenti quel regressore ha un'influenza negativa (più aumenta il valore del regressore, più la probabilità che l'evento accada cala).
+
+In particolare l'esponenziale dei coefficienti fornisce l'incremento (o il decremento) della quota di risposta all'aumentare del valore del regressore. 
 
 Ovviamente non è sufficiente analizzare i singoli regressori, ma anche la correlazione tra essi, altrimenti si corre il rischio di trarre conclusioni errate o superficiali (*confounding phenomenon*).
 

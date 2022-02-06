@@ -1,0 +1,128 @@
+Let us consider the dataframe `house`, which includes information about
+the price, the size, the floor, the number of bedrooms (bed) and the
+number of bathrooms (bath) of 546 houses. The output of the str command
+is given below
+
+```{r echo=FALSE}
+house <- read.table("./../data/house-prices.dat", header=TRUE)
+str(house)
+```
+
+A suitable linear regression model can be defined in order to study the
+potential relationship between the price, which is the response
+variable, and the explanatory variables considered in the dataframe.
+Describe how to perform a preliminary data analysis on this dataframe,
+using suitable R commands. Moreover, consider the following plots and
+discuss the possibility of measuring the variables price and size in the
+logarithmic scale.
+
+### Distribuzione delle variabili
+```{r}
+source("./../functions.R", local = knitr::knit_global())
+
+summary(house)
+numeric.graph(house, 1:2, qqplot = 1)
+categorical.graph(house, 3:5)
+```
+
+#### Osservazioni
+
+-   la variabile risposta `price` ha una curva a campana ipernormale asimmetrica a destra, con
+    code molto pesanti (soprattutto a destra dove si concentrano un buon numero di outliers),
+    per cui eventuali ipotesi di normalità sono violate (com'è visibile anche 
+    dal qq-plot). Si consiglia una trasformata per rientrare nelle ipotesi di normalità.
+
+-   anche `size` presenta un andamento molto simile a quello di `price`
+
+-   `bed`, invece presenta una distribuzione dei valori che sembra ricordare molto
+    quelli di una normale. Per conferma calcoliamo simmetria e kurtosi:
+```{r}
+moments::kurtosis(house$bed) - 3
+moments::skewness(house$bed)
+```
+    Entrambi i valori sono vicini allo 0, confermando l'ipotesi di normalità
+
+-   Dal grafico di `bath` si nota come grandissima parte delle case (ca. 3/4 del dataset)
+    ha un bagno, mentre pochissime casi hanno più di due bagni.
+    L'andamento ricorda quello di una distribuzione geometrica.
+
+-   Considerazioni simili valgono anche per `floor`, la maggior parte delle case analizzate
+    ha uno o due piani (più o meno lo stesso numero), solo una minima parte ne ha di più.
+    L'andamento non sembra seguire particolari distribuzioni.
+    
+### Relazioni tra variabili
+![](./../img/img3.png)
+
+La trasformazione logaritmica sembra l'ideale per rientrare sia nell'ipotesi di normalità
+della variabile risposta, sia per quanto riguarda la linearità della correlazione tra le due.
+
+```{r}
+house$logprice <- log(house$price)
+house$logsize <- log(house$size)
+scatterplots.graph(6, 7, house)
+boxplots.graph(6, 3:5, house)
+```
+
+#### Osservazioni
+
+-   Il logaritmo del price e quello della dimensione delle case sembrano essere correlati
+    linearmemente.
+
+-   Sembra esserci una correlazione tra il numero di bagni, i piani e il prezzo.
+    Tuttavia, a rigor di logica, potrebbe essere interessante indagare correlazioni tra
+    il numero di bagni e i piani della casa:
+```{r}
+tab <- table(house$bath, house$floor)
+barplot(prop.table(tab,2), beside=T, legend.text = paste(colnames(tab), "bagni"))
+```
+  
+  Sembra esserci una correlazione tra il numero di bagni e il numero di piani di una casa,
+  in particolare maggiore è il numero di piani più aumenta la probabilità di avere 2 o più bagni
+  in casa.
+  
+```{r}
+boxplots.graph(7, 3:5, data = house)
+```
+
+Sembrano esserci correlazioni tra logsize le altre variabili, tuttavia viste le distribuzioni
+di queste variabili nel dataset (tante osservazioni concentrate su pochi valori), c'è il rischio
+che queste osservazioni siano poco attendibili e dovute più alla struttura del campione
+che alla popolazione in esame.
+
+After fitting the regression model
+`fit <- lm(log(price) ∼ log(size) + bed + bath + floor, data=house)`,
+the following outputs are obtained by the R commands `summary(fit)` and
+`plot(fit)`, respectively.
+
+```{r echo=FALSE}
+fit <- lm(log(price) ~ log(size) + bed + bath + floor, data=house)
+summary(fit)
+plot(fit, lwd = 2, which = 1:6)
+```
+
+Describe how to interpret these results, and then suggest how to proceed
+with further analyses with particular regard to prediction.
+
+#### Osservazioni
+
+-   Tutti i regressori indicato sono molto o moderatamente significativi 
+    (tutti i p-value dei regressori e quello del test F sono molto bassi)
+    
+-   Il modello sembra rispettare le ipotesi di normalità dei residui e omoschedasticità.
+
+-   L'ipotesi di linearità non sembra presentare particolari criticità, come visibile dal grafico
+    dei residui e dei residui standardizzati.
+    
+-   Non ci sono punti influenti.
+    
+-   Gli indici $R^2$ sono molto simili e con valore abbastanza basso,
+    questo potrebbe rendere delle eventuali previsioni fatte utilizzando il modello
+    poco affidabili. Questo probabilmente è dovuto sia all'elevata varianza di `price`
+    che alla scarsità di dati per alcuni valori estremi dei regressori.
+
+#### Calcolo dell'accuratezza tramite MSE
+```{r}
+calculateMSE(glm(log(price) ~ log(size) + bed + bath + floor, data=house), house)
+```
+
+??

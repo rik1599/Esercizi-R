@@ -3,6 +3,66 @@ output:
   word_document: default
   html_document: default
 ---
+Partiamo con una panoramica rapida del dataset.
+
+```{r}
+library(ISwR)
+source("./../functions.R", local = knitr::knit_global())
+data("bp.obese")
+
+bp.obese$sex <- factor(bp.obese$sex, labels = c("male", "female"))
+str(bp.obese)
+summary(bp.obese)
+```
+
+Il dataset è costituito da tre variabili, due numeriche continue (obese e bp) e una categoriale non ordinale (sex). 
+
+La variabile risposta è bp e lo scopo dell'analisi è fornire un modello di regressione
+per stabilire come il valore della pressione sistolica delle persone vari a seconda del loro
+indice di obesità e del loro sesso.
+
+### Distribuzione delle variabili
+```{r}
+numeric.graph(bp.obese, c(2, 3), qqplot = c(2,3))
+categorical.graph(bp.obese, 1)
+```
+#### Osservazioni
+
+-   C'è una marcata assimmetria verso destra delle variabili bp e obese
+
+-   Le curve di bp e obese sono fortemente ipernormali, avendo entrambi delle
+    curve destre molto pesanti, come è possibile vedere dai qqplot delle due variabili.
+
+-   Per questi motivi, a meno di trasformazioni delle due variabili, eventuali ipotesi di
+    normalità sono violate, come confermato dal test D'Agostino sule due variabili
+```{r}
+fBasics::dagoTest(bp.obese$bp)
+fBasics::dagoTest(bp.obese$obese)
+```
+    
+-   In bp e in obese sono presenti degli outliers sui valori massimi.
+
+-   Le osservazioni sembrano essere ben distribuite tra uomini e donne
+
+### Relazioni tra variabili
+```{r}
+scatterplots.graph(response.var = 3, esplicative.vars = c(2), data = bp.obese)
+boxplots.graph(response.var = 2, esplicative.vars = c(1), data = bp.obese)
+boxplots.graph(response.var = 3, esplicative.vars = c(1), data = bp.obese)
+```
+#### Osservazioni
+
+-   Tra bp e obese sembra esserci una debole correlazione lineare.
+
+-   Sembra esserci correlazione tra obese e sex, seppur molto debole.
+
+-   I tre ouliers di obese sono tutti riferiti a soggetti di sesso femminile,
+    come confermato dal secondo boxplot. Considerata anche la distribuzione
+    tra soggetti maschili e femminili nel dataset, potrebbe essere una buona
+    idea rimuovere i tre outlier dalle osservazioni.
+
+-   Non sembra esserci una correlazione significativa tra bp e sex.
+
 After fitting these linear models
 `fit1 <- lm(bp ∼ obese,data=bp.obese)`,
 `fit2 <- lm(bp ∼ obese+sex,data=bp.obese)` and
@@ -10,8 +70,6 @@ After fitting these linear models
 obtained by the R function summary.
 
 ```{r echo=FALSE}
-library(ISwR)
-source("./../functions.R", local = knitr::knit_global())
 fit1 <- lm(bp ~ obese,data=bp.obese)
 summary(fit1)
 ```
@@ -35,7 +93,13 @@ Tutti e tre sono caratterizzati dai valori degli indici $R^2$ estremamente bassi
 
 Dal punto di vista della significatività dei parametri `fit3` è il modello peggiore
 (tutti i regressori tranne l'intercetta hanno p-value elevato), in particolare l'interazione
-tra obese e sex; mentre il migliore è `fit1`.
+tra obese e sex (probabilmente ci sono delle collinearità); mentre il migliore è `fit1`.
+```{r}
+library(DAAG)
+vif(fit3)
+```
+L'analisi *vif* conferma la presenza di collinearità (anche piuttosto marcate) nel
+modello `fit3`.
 
 Confrontiamo i tre modelli con ANOVA, AIC e BIC per scegliere il migliore tra `fit1` e `fit2`
 ```{r}
@@ -63,7 +127,7 @@ variabili numeriche, introduciamo delle trasformazioni.
 
 Calcoliamo una trasformata adeguata per bp tramite il metodo di Box Cox.
 ```{r}
-bp.obese$bpT <- transformResponseWithBoxCox(fit2, bp.obese, "bp")
+bp.obese$bpT <- transformResponseWithBoxCox(fit2, dataset = bp.obese, response.var = 3)
 fit4 <- lm(bpT~sex+obese, data = bp.obese)
 summary(fit4)
 plot(fit4)
@@ -74,6 +138,3 @@ BIC(fit3, fit4)
 La trasformazione ha permesso di rientrare nell'ipotesi di normalità dei residui
 e sia il test F del modello, sia le statistiche AIC e BIC confermano il fatto che
 `fit4` sia il modello migliore.
-
-Tuttavia il basso valore degli indici $R^2$ suggerisce il fatto che sono necessari
-ulteriori regressori per giungere a un modello soddisfacente.

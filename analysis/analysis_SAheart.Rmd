@@ -1,0 +1,119 @@
+Let us consider the dataframe SAheart of the library ElemStatLearn,
+which comprises information about a retrospective sample of males in a
+heart-disease high-risk region of the Western Cape, South Africa. The
+help file and the output of the str command are given below
+
+```{r, echo=FALSE, printr.help.sections="format"}
+library(ElemStatLearn)
+data("SAheart")
+help(SAheart)
+str(SAheart)
+```
+
+The aim of the study is to analyze the potential relationship between
+the binary response variable chd and the explanatory variables
+considered in the dataframe. Describe how to perform a preliminary
+data analysis on this dataframe, using suitable R commands, and comment
+the following plot.
+
+### Distribuzione delle variabili
+Dataset composto da 8 variabili numeriche e 2 categoriali.
+La variabile risposta è `chd` di tipo booleano.
+
+```{r}
+source("./../functions.R", local = knitr::knit_global())
+
+categorical.graph(data = SAheart, variables = c(10, 5))
+numeric.graph(data = SAheart, variables = c(1,2,3,4,6,7,8,9))
+```
+#### Osservazioni
+
+-   tobacco e alcohol non seguono un'andamento a campana e presentano entrambi un elevato
+    numero di outliers.
+
+-   typea, age e adiposity hanno una buona simmetria, leggermente spostata a sinistra
+
+-   age non sembra seguire una particolare distribuzione
+
+-   obesity, adiposity e typea hanno un buon livello di curtosi (sono entrambe leggermente iponormali)
+
+-   sbp, obesity e ldl hanno un considerevole numero di outliers sulla coda destra
+
+### Relazioni tra variabili
+```{r}
+boxplots.graph(10, 1:9, data = SAheart, inverse = T)
+barplot.graph(10, 5, data = SAheart)
+```
+#### Osservazioni
+
+-   Per chd sembrano esserci correlazioni con le variabili famhist, age e adiposity.
+
+-   Sembra esserci una correlazione molto debole (medie leggermente diverse) tra 
+    chd e tobacco e tra chd e ldl.
+
+-   Per quanto riguarda chd~ldl si nota l'elevato numero di outlier, i quali potrebbero
+    influenzare molto l'eventuale modello logistico.
+
+With the command
+`mod0 <- glm(chd ∼ ldl, data = SAheart, family = binomial)`, a simple
+logistic regression model is defined for describing the potential effect
+of the level of ldl on the probability of coronary heart disease.
+Comment the model fitting outcomes given by the function summary.
+
+```{r echo=FALSE}
+mod0 <- glm(chd ~ ldl, data = SAheart, family = binomial)
+summary(mod0)
+```
+
+Da questo modello risulta che ldl è un regressore significativo per chd e che un aumento
+di questo valore corrisponde anche a un aumento della probabilità di chd.
+
+After fitting these two further logistic regression models
+`mod1 <- glm(chd ∼ ., data = SAheart, family = binomial)` and
+`mod2 <- glm(chd ∼ tobacco + ldl + famhist + typea + age + ldl:famhist, data = SAheart, family = binomial)`,
+the following outputs are obtained by the R function summary.
+Describe how to interpret these results, and then suggest how to proceed
+with further analyses.
+
+```{r echo=FALSE}
+mod1 <- glm(chd ~ ., data = SAheart, family = binomial)
+summary(mod1)
+```
+
+Modello di regressione logistico con tutte le variabili esplicative.
+Si nota che non tutti i regressori sono significativi, 
+in particolare alcohol, adiposity e sbp.
+
+Il regressore più significativo è `famhist` con valore positivo (la presenza di
+persone con chd in famiglia aumenta la probabilità di avere chd a sua volta).
+
+Si nota però una netta riduzione sia dell'indice AIC che della devianza residua
+rispetto al modello `mod0`.
+
+```{r}
+mod2 <- glm(chd ~ tobacco + ldl + famhist + typea + age + ldl:famhist, data = SAheart, family = binomial)
+summary(mod2)
+```
+
+Modello di regressione logistico senza le tre variabili non significative del modello
+precedente + l'interazione tra ldl e famhist (rappresentata dalla variabile dummy `famhistPresent`).
+
+I regressori meno significativi sono ldl e famihst, tuttavia la loro interazione
+è significativa e con effetto positivo. 
+
+Infatti, rispetto a `mod1`, famhistPresent cambia di segno, il che significa che
+nelle famiglie con persone aventi chd al suo interno il valore di ldl tende ad essere
+leggermente più elevato.
+Questa impressione è verificabile dal boxplot delle due variabili:
+```{r}
+boxplots.graph(3, 5, data = SAheart)
+```
+
+
+### Verifica di correttezza e accuratezza del modello `mod2`
+```{r}
+logitResponse.modelVerify(mod2, 10)
+```
+
+Il livello di accuratezza è buono, ma non troppo elevato. Non ci sono problemi di
+overfitting (la stima di accuratezza interna e cross-validata è molto simile).

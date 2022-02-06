@@ -1,0 +1,154 @@
+Let us consider the data frame loan, which contains information about
+42,535 loans ranging from 1,000 \$ to 35,000 \$, issued by a company
+called Lending Club. The following variables are considered: good (the
+behaviour of the client with values good and bad), fico (the FICO credit
+score measuring the client credit worthiness), purpose (the intended use
+of the loan, with 8 different categories), loan amt (the credit amount
+in \$) and income (the annual income in \$ of the client). The variable
+as are listed below and the output of the str command is given
+
+```{r echo=FALSE, printr.help.sections="format"}
+loan <- read.table("./../data/loan.txt", header = TRUE)
+loan$good <- factor(loan$good)
+loan$purpose <- factor(loan$purpose)
+str(loan)
+```
+
+Moreover, the output of the command summary is also given
+
+```{r echo=FALSE}
+summary(loan)
+```
+
+The aim of the study is to analyze the potential relationship between
+the response variable good and the explanatory variables considered in
+the data frame, in order to evaluate the possible good/bad behaviour of
+a customer. Describe how to perform a preliminary data analysis on this
+data frame, using suitable R commands. Moreover, consider and discuss
+the following plots
+
+Rimuoviamo i dati NA dal dataset
+```{r}
+loan <- loan[complete.cases(loan),]
+summary(loan)
+```
+
+Distribuzione delle variabili
+
+```{r}
+source("./../functions.R", local = knitr::knit_global())
+
+numeric.graph(loan, 3:5)
+categorical.graph(loan, 1:2)
+```
+Le variabili numeriche non sembrano seguire delle particolari distribuzioni.
+La variabile income presenta degli outlier molto grandi, per cui è necessario introdurre una
+trasformata.
+```{r}
+loan$logincome <- log(loan$income)
+numeric.graph(6, data = loan, qqplot = 6)
+```
+La trasformata logaritmica su income migliora notevolmente simmetria e curtosi restituendoci
+una campana ipernormale con una coda pesante a destra.
+
+Dal punto delle variabili categoriali si nota la netta predominanza di un fattore su
+tutti gli altri (sia per good che per purpose).
+
+![](./../img/img6.png)
+I grafici qui sopra mettono in correlazione la variabile risposta good con le altre
+variabili del dataset.
+
+Le correlazioni tra le variabili numeriche sembrano essere molto deboli e 
+fortemente influenzate dalla presenza di numerosi outliers.
+
+Non sembrano esserci particolari correlazioni tra good e purpose, se non per alcuni
+particolari fattori.
+
+In order to describe the effect of the factor fico on the response good
+we consider a simple logistic regression model fitted using the command
+`mod.1<-glm(good ∼ fico, data = loan, family = "binomial")`. Comment the
+model fitting outcomes given by the function summary and the output
+given by the subsequent commands.
+
+```{r}
+mod.1 <- glm(good ~ fico, data = loan, family = "binomial")
+summary(mod.1)
+
+exp(coef(mod.1))
+test <- data.frame(fico=c(700,750))
+test$pred <- predict(mod.1,test, type="response")
+test
+```
+Sia l'intercetta che il regressore fico sono regressori significativi,
+in particolare l'incremento di probabilità di good all'aumentare di fico è dello
+0,11%, mentre al valore dell'intercetta (quindi quando il valore di fico è 0) 
+è associata una probabilità dello 0,3% di ottenere una valutazione GOOD.
+```{r}
+exp(coef(mod.1)[1])/1+exp(coef(mod.1)[1])
+```
+
+La funzione predict fornisce la probabilità di successo per due valori di fico: 700 e 750,
+rispettivamente del 83% e del 89% sulla base del modello.
+
+Two further logistic regression models are fitted using
+`mod.2<-glm(good ∼ fico + loan_amnt, data = loan, family = "binomial")`
+and
+`mod.3<-glm(good ∼ fico + loan_amnt + income + purpose, data = loan, family = "binomial")`.
+Comment the corresponding output obtained by the R function summary and
+then suggest how to proceed with a further predictive analysis.
+
+```{r}
+mod.2 <- glm(good ~ fico + loan_amnt, data = loan, family = "binomial") 
+summary(mod.2)
+```
+
+Da questo modello risulta che tutti di due regressori numerici sono fortemente
+significativi, tuttavia gli incrementi (o decrementi) di probabilità sono molto
+contenuti.
+
+```{r}
+mod.3 <- glm(good ~ fico + loan_amnt + income + purpose, data = loan, family = "binomial")
+summary(mod.3)
+```
+
+Da questo modello risulta che non tutti i fattori di purpose sono significativi,
+e la maggior parte di questi hanno coefficiente negativo, in particolare l'attività
+più "a rischio" sembra essere small_business, seguita da educational.
+Non si rilevano confounding phenomena dovuti a correlazioni non rilevate. 
+
+Il valore dell'AIC fa preferire questo modello rispetto al precedente.
+
+Verifichiamo quale dei due modelli è più accurato
+```{r}
+logitResponse.modelVerify(mod.2, response.var = 1)
+logitResponse.modelVerify(mod.3, response.var = 1)
+```
+Entrambi i modelli sono corretti, tuttavia c'è un evidente problema di sovrastima
+delle probabilità in entrambi, che concentrano tutti i fitted values
+nel range [0.5-1].
+
+Questo probabilmente è dovuto probabilmente alla struttura del dataset per cui
+si consiglia di inserire ulteriori dati nel dataset, in particolare casi per cui
+la variabile `good` assume valore negativo, oppure valutare una soglia di previsione
+alternativa con la curva ROC.
+
+```{r}
+logitResponse.modelVerify.verbose(glm.object = mod.3, 
+                                  response.var = 1, 
+                                  regressors = 2:4, 
+                                  data = loan,
+                                  values = c("good", "bad"),
+                                  roc = T)
+```
+```{r}
+logitResponse.modelVerify.verbose(glm.object = mod.2, 
+                                  response.var = 1, 
+                                  regressors = 2:4, 
+                                  data = loan,
+                                  values = c("good", "bad"),
+                                  roc = T)
+```
+
+Il confronto tra le curve ROC dei due modelli suggerisce l'utilizzo di `mod3`, oppure
+classificatori di altro tipo.
+
