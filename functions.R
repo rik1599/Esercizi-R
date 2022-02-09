@@ -47,13 +47,21 @@ numeric.graph <- function(data,
   print(moments::kurtosis(data[, variables]) - 3)
 }
 
-categorical.graph <- function(data, variables) {
+categorical.graph <- function(data, variables, prob=c()) {
   for (var in variables) {
     table.var <- table(data[, var])
     name <- names(data)[var]
     par(mfrow=c(1,2))
     
-    barplot(table.var, xlab = name, main = paste("Boxplot of", name))
+    if (var %in% prob) {
+      barplot(
+        prop.table(table.var),
+        xlab = name, main = paste("Barplot of", name))
+    } else {
+      barplot(
+        table.var,
+        xlab = name, main = paste("Barplot of", name))
+    }
     pie(table.var, main = paste("Piechart of", name))
     
     par(mfrow=c(1,1))
@@ -162,13 +170,16 @@ logitResponse.modelVerify <- function(lm.object, response.var) {
   CVbinary(lm.object)
 }
 
-logitResponse.modelVerify.verbose <- function(glm.object, 
+logitResponse.modelVerify.verbose <- function(formula, 
                                               response.var, 
                                               regressors, 
                                               data, 
                                               K=10, B=1,
                                               values=c(1,0),
                                               roc = F) {
+  fstring <- as.character(formula)
+  glm.object <- glm(as.formula(paste(fstring[2], fstring[1], fstring[3])),
+                    family = binomial, data = data)
   pred <- ifelse(predict(glm.object, data, type='response') > 0.5, values[1], values[2])
   cm <- crossval::confusionMatrix(data[, response.var], pred, negative = values[2])
   de <- crossval::diagnosticErrors(cm)
@@ -201,6 +212,46 @@ logitResponse.modelVerify.verbose <- function(glm.object,
   }
   
   return(tabe)
+}
+
+
+
+knn.modelVerify.verbose <- function(formula,
+                                    data,
+                                    response.var,
+                                    vars,
+                                    values=c(1,0),
+                                    roc = F,
+                                    folds = 5) {
+  fstring <- as.character(formula)
+  classifier <- RWeka::IBk(as.formula(paste(fstring[2], fstring[1], fstring[3])), 
+                           data = data, 
+                           control = RWeka::Weka_control(K=20, X=TRUE))
+  
+  tr.knn <- RWeka::evaluate_Weka_classifier(classifier, numFolds=0)$confusionMatrix
+  cv.knn <- RWeka::evaluate_Weka_classifier(classifier, numFolds=folds,
+                                     seed=1973)$confusionMatrix
+  
+  ev.acc <- function(CM) {
+    acc <- (CM[1,1] + CM[2,2]) /sum(CM)
+    tn <- CM[1,1] / (CM[1,1]+CM[1,2])
+    tp <- CM[2,2] / (CM[2,1]+CM[2,2])
+    return(c(acc, tn, tp))
+  }
+  
+  tabe1 <- rbind(ev.acc(tr.knn), ev.acc(cv.knn))
+  rownames(tabe1) <- c("training data","cross-validated")
+  colnames(tabe1) <- c("tot. accuracy","true negative","true positive")
+  
+  if(roc) {
+    prob.knn <- predict(classifier, type="probability")[, 2]
+    booleanResponse <- ifelse(data[, response.var] == values[1], 1, 0)
+    verification::roc.plot(booleanResponse, prob.knn, 
+                           xlab='false positive rate = 1-true negative rate', 
+                           ylab='true positive rate')
+  }
+  
+  return(tabe1)
 }
 
 calculateMSE <- function(glm.object, data) {

@@ -65,9 +65,6 @@ Si notano invece delle correlazioni molto forti con `low` e `ui`, mentre con `sm
 
 Il secondo grafico rappresenta lo scatterplot tra `bwt` ed `age`, con i punti raggruppati in base
 al valore di `race` e per ogni gruppo è stata tracciata la retta di regressione.
-I due grafici suggeriscono l'assenza di effetti di interazione significativi tra `age` e `race`
-(si può infatti osservare l'assenza di un particolare pattern di distribuzione dei punti
-tra i gruppi).
 
 In order to describe the potential relationship between birth weight and
 age, taking into account also the factor race, we compare the following
@@ -88,9 +85,14 @@ model selection procedures.
 anova(bwt.lm1, bwt.lm2, bwt.lm3, bwt.lm4)
 ```
 
-L'analisi anova conferma l'assenza di interazioni significative tra age e race,
-mentre sono moderatamente significativi gli effetti principali di age e race.
-Il singolo effetto di `age` non è invece significativo.
+```{r}
+# Come comportarsi in questi casi?
+# Cosa mettere prima?
+
+anova(lm(bwt ~ age*race, data = birthwt))
+
+anova(lm(bwt ~ race*age, data = birthwt))
+```
 
 Let us consider Model 3 and comment the output obtained by the R
 functions summary and plot.
@@ -101,7 +103,10 @@ plot(bwt.lm3, which = 1:4)
 ```
 
 Il modello con solo gli effetti principali rispetta le ipotesi di linearità,
-omoschedasticità e normalità dei residui. Non presenta punti particolarmente influenti.
+omoschedasticità e normalità dei residui.
+
+Si segnalano 3 osservazioni particolarmente influenti nel modello.
+
 Si nota un particolare effetto di clusterizzazione dei fitted values in due gruppi
 distinti.
 
@@ -116,6 +121,12 @@ nel modello, le tre rette sono parallele.
 Da questo grafico sono visibili i due cluster individuati nei grafici diagnostici:
 il cluster a sinistra sono i fitted values con fattore `race`= "black" o "other",
 il cluster più a destra sono i fitted values con valore `race`="white".
+
+
+
+
+
+
 
 Proviamo a scegliere il modello migliore per il dataset.
 Cerchiamo i regressori più significativi:

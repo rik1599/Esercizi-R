@@ -133,7 +133,7 @@ la variabile `good` assume valore negativo, oppure valutare una soglia di previs
 alternativa con la curva ROC.
 
 ```{r}
-logitResponse.modelVerify.verbose(glm.object = mod.3, 
+logitResponse.modelVerify.verbose(formula = good ~ fico + loan_amnt + income + purpose, 
                                   response.var = 1, 
                                   regressors = 2:4, 
                                   data = loan,
@@ -141,7 +141,7 @@ logitResponse.modelVerify.verbose(glm.object = mod.3,
                                   roc = T)
 ```
 ```{r}
-logitResponse.modelVerify.verbose(glm.object = mod.2, 
+logitResponse.modelVerify.verbose(formula = good ~ fico + loan_amnt, 
                                   response.var = 1, 
                                   regressors = 2:4, 
                                   data = loan,
@@ -150,5 +150,9 @@ logitResponse.modelVerify.verbose(glm.object = mod.2,
 ```
 
 Il confronto tra le curve ROC dei due modelli suggerisce l'utilizzo di `mod3`, oppure
-classificatori di altro tipo.
+valutare classificatori di altro tipo, come il kNN
+
+```{r}
+knn.modelVerify.verbose(good ~ fico + loan_amnt + income + purpose, data = loan, values = c("good", "bad"), roc=T, response.var = "good")
+```
 

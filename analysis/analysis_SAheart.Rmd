@@ -41,7 +41,7 @@ numeric.graph(data = SAheart, variables = c(1,2,3,4,6,7,8,9))
 
 ### Relazioni tra variabili
 ```{r}
-boxplots.graph(10, 1:9, data = SAheart, inverse = T)
+boxplots.graph(10, c(1:4,6:9), data = SAheart, inverse = T)
 barplot.graph(10, 5, data = SAheart)
 ```
 #### Osservazioni

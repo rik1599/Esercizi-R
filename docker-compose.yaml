@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   rstudio:
-    image: docker.io/rocker/rstudio
+    build: ./
     volumes:
       - r_packages:/usr/local/lib/R/site-library
       - ./:/home/rstudio

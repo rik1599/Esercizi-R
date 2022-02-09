@@ -241,17 +241,18 @@ being calculated on each line.
 ### Codice n°1
 ```{r eval=FALSE}
 set.seed(4)
-x <- seq(0,1.5,0.01)
-sim1<-rbinom(1000,25,0.25)/25
+x <- seq(0,1.5,0.01)  # vettore da 0 a 1.5 con passi di 0.01
+# la divisione stima la probabilità di successo di ogni elemento dei campioni 
+sim1<-rbinom(1000,25,0.25)/25 # estrazione di un campione 1000 campioni da una binomiale n=25, p=0.25.
 sim2<-rbinom(1000,50,0.25)/50
 sim3<-rbinom(1000,100,0.25)/100
 ```
 
 ### Codice n°2
 ```{r eval=FALSE}
-par(mfrow=c(1,3),pty="s")
-hist(sim1,freq=F,xlab="n=25",ylab=' ',main=' ')
-lines(x,dnorm(x,0.25,sqrt(0.25*0.75/10)),lwd=2,col='red')
+par(mfrow=c(1,3),pty="s") # schermata 1x3 quadrata
+hist(sim1,freq=F,xlab="n=25",ylab=' ',main=' ') # istogramma delle probabilità di sim1
+lines(x,dnorm(x,0.25,sqrt(0.25*0.75/10)),lwd=2,col='red') # curva di densità di una normale con media=0.25 e deviazione standard sqrt(0.25 * (1-0.25))
 lines(density(sim1),lwd=2)
 hist(sim2,freq=F,xlab="n=50",ylab=' ',main=' ')
 lines(x,dnorm(x,0.25,sqrt(0.25*0.75/30)),lwd=2,col='red')
@@ -261,6 +262,8 @@ lines(x,dnorm(x,0.25,sqrt(0.25*0.75/100)),lwd=2,col='red')
 lines(density(sim3),lwd=2)
 par(mfrow=c(1,1))
 ```
+
+Mostra il teorema centrale del limite per una binomiale all'aumentare di $n$
 
 ## Compito del 18 febbraio 2020
 Describe the R functions that can be used for model selection. Furthermore, consider the R

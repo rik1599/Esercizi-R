@@ -1,3 +1,9 @@
+---
+output:
+  pdf_document: default
+  word_document: default
+  html_document: default
+---
 ## Compito del 1 febbraio 2017
 
 ### Describe what are the aims of Exploratory Data Analysis and present the main numerical summaries for bivariate data.
@@ -82,8 +88,7 @@ Con $SE(\hat{Y_0}) = \sqrt{\hat{\sigma^2} + SE(\hat{\mu_0})^2}$
 
 ## Compito del 13 febbraio 2017
 
-### Describe the purpose of an interval estimation procedure.Confidence intervals may be calculated for the model parameters and
-for the regression line at some given value x0 , name
+### Describe the purpose of an interval estimation procedure.
 Gli intervalli di confidenza offrono delle stime molto più accurate sul reale valore del parametro ricercato rispetto a una semplice stima puntuale.
 
 ### Give the right statistical interpretation of an observed 95% confidence interval for an interest parameter.
@@ -293,7 +298,7 @@ Solitamente se il valore del $p$-value è inferiore al livello di significativit
 Le ipotesi sono:
 $$H_0 : \mu = \mu_0 \quad H_1 : \mu \neq \mu_0$$
 
-Se le osservazioni provengono da una v.c. con distribuzione normale, si utilizza il $t$ test, che vale, sotto $H_0$
+Se le osservazioni provengono da una v.c. con distribuzione normale con varianza sconosciuta, si utilizza il $t$ test, che vale, sotto $H_0$
 $$ T = \frac{\bar{Y} - \mu_0}{S/\sqrt{n}} \sim t(n-1) $$
 
 Se la varianza $\sigma^2$ è conosciuta si usa lo $z$ test, che vale, sotto $H_0$
@@ -316,7 +321,7 @@ $$ p = 2\min\{ P_{H_0} (T \leq t), P_{H_0} (T \geq t) \} $$
 
 5.  Attenzione alle correlazioni spurie! (correlazioni casuali o dovute a variabili nascoste)
 
-6.  Utilizzare (con cautela!) tecniche di selezione semi-automatica delle covariate come lasso, booting, least angle regression, oppure l'Analisi delle Componenti principali (ridurre il numero di covariate sostituendole con delle combinazioni lineari delle stesse)
+6.  Utilizzare tecniche di selezione semi-automatica delle covariate come lasso, booting, least angle regression, oppure l'Analisi delle Componenti principali (ridurre il numero di covariate sostituendole con delle combinazioni lineari delle stesse)
 
 ### Discuss the problem of multicollinearity and consider the potential remedies.
 Ci possono essere situazioni in cui le covariate portano contenuti informativi sovrapposti (c'è un legame tra le covariate).
@@ -347,7 +352,7 @@ One-way ANOVA è un insieme di tecniche per confrontare le medie di gruppi di da
 
 Il modello statistico alla base di ANOVA è un caso particolare di regressione lineare:
 $$ y_{ij} = \mu + \tau_i + \varepsilon_{ij} $$
-Dove $y_{ij}$ è l'osservazione $j$-esima appartenente all'$i$-esimo gruppo, $\mu$ è la media globale, $\varepsilon_{ij}$ l'errore random, $\tau_i$ è la differenza tra la media globale e la media dell'$i$-esimo gruppo (effetto trattamento).
+Dove $y_{ij}$ è l'osservazione $j$-esima appartenente all'$i$-esimo gruppo, $\mu$ è la media globale, $\varepsilon_{ij}$ l'errore random, $\tau_i$ è la differenza tra la media globale e la media dell'$i$-esimo gruppo (effetto trattamento). Le osservazioni dell'$i$-esimo gruppo $Y_{ij} \sim N(\mu+\tau_i, \sigma^2)$ sono indipendenti. 
 
 Sul valore di $\tau_i$ è definito un test statistico così definito:
 $$ H_0:\tau_1=\tau_2=\dots=\tau_a=0 $$
@@ -386,6 +391,19 @@ $$ y(\lambda) =
 \end{cases}
 $$
 Per un parametro reale $\lambda$ ottenibile attraverso diversi metodi, il più utilizzato prevede di massimizzare il valore di una funzione di log-verosimiglianza.
+
+### (Cap 5) Effetto leva
+Dato una osservazione $y_i$, se il suo valore cambia a $y_i + \Delta_i$, il corrispondente
+fitted value nel modello $\hat{y_i}$ diventa $\hat{y_i}+h_{ii}\Delta_i$. $h_{ii}$ è detto
+**leva** dell'osservazione.
+In un modello con $p$ coefficienti e $n$ osservazioni, sono considerate alte le leve maggiori di $2p/n$ o $3p/n$
+
+### (Cap 5) Punti influenti
+In un modello un'osservazione è considerata **influente** se omettendola dal modello
+altera i fitted values del modello. L'influenza è una combinazione dei residui con la leva delle osservazioni.
+
+Per misurare l'influenza di un'osservazione si utilizza la **Distanza di Cook**, che misura il cambiamento
+nelle stime del modello quando l'osservazione in esame viene omessa, utilizzando i residui standardizzati. Si considerano a influenza elevata i punti con distanza di Cook > 0.5
 
 ### (Cap 6) Misurare la qualità di un modello
 Per verificare poi l'accuratezza del modello si confrontano i valori predetti con quelli osservati, attraverso il calcolo del *training MSE*.
