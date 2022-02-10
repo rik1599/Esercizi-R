@@ -1,0 +1,105 @@
+---
+title: "Strumenti - Classificazione Vari"
+author: "Emanuele Lena - 142411@uniud"
+date: "9/2/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+(dati:)
+```{r}
+Scoring <- read.table(file="../data/Scoring.txt",header=TRUE)
+# acc1=1 (no runnig account) acc1=0 (good or bad running account)
+# acc2=1 (good running account) acc2=0 (no or bad running account)
+Scoring$account <- 1 - Scoring$acc1 + Scoring$acc2
+Scoring$account <- factor(Scoring$account)
+Scoring$moral <- factor(Scoring$moral)
+Scoring$intuse <- factor(Scoring$intuse)
+Scoring$y <- factor(Scoring$y)
+```
+
+
+## [MASS] Linear Discriminant Analysis (LDA)
+
+```{r}
+# Creaz. di modello LDA
+classifierLDA <- MASS::lda(y ~ amount + duration, Scoring)
+
+# Uso del modello per fare classificazione
+predLDA <- predict(classifierLDA) 
+# predLDA$class           # <- classificazioni per ogni oss.
+# predLDA$posterior[, 1]  # <- prob. che l'oss. sia 0
+# predLDA$posterior[, 2]  # <- prob. che l'oss. sia 1 (STIMA DELLA PROBABILITA')
+
+
+prob.lda <- predLDA$posterior[, 2]
+
+```
+
+
+## [RWeka] k-Nearest Neighbors (kNN)
+
+### Creazione modello kNN
+```{r}
+# Creaz. di un modello kNN
+classifierKNN <- RWeka::IBk(
+  y ~ moral + intuse+ account + amount + duration, data = Scoring,
+  control = RWeka::Weka_control(K=20, X=TRUE) # scegli il miglior K con cross validation (val. max=20)
+)
+
+predKNN <- predict(classifierKNN, type="probability") 
+# (se mettevo "class" ottenevo il vettore delle classif. binarie)
+
+prob.knn <- predKNN[,2]
+# (se mettevo [,1] ottenevo le prob. per il val. 0, cioè 1-...)
+```
+
+### Confusion matrix di kNN (con e senza CV)
+
+```{r}
+# confusion matrix SENZA cv
+tr.knn <- RWeka::evaluate_Weka_classifier(classifierKNN, numFolds=0)$confusionMatrix
+tr.knn
+
+# confusion matrix CON cv
+cv.knn <- RWeka::evaluate_Weka_classifier(classifierKNN, numFolds=20,seed=1234)$confusionMatrix
+cv.knn
+
+```
+
+
+## [verification] Curva ROC
+
+```{r}
+# (mod di reg. logistica classico)
+mod1 <- glm(y~account+duration+amount+moral+intuse, family=binomial, data=Scoring)
+
+# creaz. di un parametro per le roc
+ver_mod1<-verification::verify(as.numeric(Scoring$y)-1, fitted(mod1), bins = FALSE,show = FALSE)
+ver_lda<-verification::verify(as.numeric(Scoring$y)-1, prob.lda, bins = FALSE, show = FALSE)
+ver_knn<-verification::verify(as.numeric(Scoring$y)-1, prob.knn, bins = FALSE, show = FALSE)
+
+# plot delle roc per i tre modelli 
+verification::roc.plot(ver_mod1, xlab="false positive rate = 1-true negative rate", 
+                       ylab="true positive rate",lwd=2, show.thres = FALSE) # (qui il colore è nero)
+verification::lines.roc(ver_lda, col = "red", lwd = 2)
+verification::lines.roc(ver_knn, col = "blue", lwd = 2)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+

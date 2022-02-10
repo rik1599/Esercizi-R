@@ -31,6 +31,8 @@ Principali indici per variabili bivariate:
     correlazione tra due variabili in caso di distribuzioni asimmetriche 
     o correlazioni di tipo non-lineare.
 
+-   **tabelle di contingenza** per le variabili categoriali.
+
 ### Define the multiple linear regression model and highlight the basic assumptions.
 
 In un modello di regressione lineare multiplo il valore della variabile
@@ -146,6 +148,8 @@ $$ \left[ \bar{y} \pm t(n-1)_{\frac{1-\alpha}{2}}SEM \right] $$
 
 -   Anche per queste statistiche si possono implementare dei metodi di forward e
     stepback selection (simili a quelli visti in precedenza)
+    
+-   Indice di cross-validation
 
 ## Compito del 15 febbraio 2018
 

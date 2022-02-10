@@ -1,0 +1,271 @@
+---
+title: "Strumenti - Unsupervised"
+author: "Emanuele Lena - 142411@uniud"
+date: "9/2/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Analisi Componenti Principali (PCA)
+
+
+### Effettuazione della PCA (princomp)
+
+```{r}
+# Effettuazione dell'analisi
+obj <- princomp(USArrests, cor=TRUE)  # cor=TRUE per usare le v. standardizzate
+
+# dev standard di ciascuna componente
+obj$sdev        
+
+# pesi per ciascuna variabile in ciascuna componente
+obj$loadings    
+
+# "punteggi" zi per ciascuna osservazione (in ciascuna componente)
+# obj$scores      
+
+# punteggi zi prima componente
+# obj$scores[,1]  
+
+```
+
+### Visualizzazione delle oss. come score delle prime due princ. componenti (princomp)
+
+```{r}
+obj <- princomp(USArrests, cor=TRUE)
+
+# biplot (dato l'output di princomp)
+biplot(obj, xlab="1st principal component", ylab="2nd principal component", 
+       xlim=c(-3.5,3.5), col=c(1,2), scale=0)
+
+```
+
+### Varianza spiegata dalle componenti (screeplot)
+
+
+```{r}
+par(mfrow=c(1,2), pty="s")
+
+# proporzione di varianza spiegata (screeplot)
+plot(obj$sdev^2/4, xlab="Principal component", ylab="PVE", type="b")
+
+# proporzione cumulativa di varianza spiegata
+plot(cumsum(obj$sdev^2)/4, xlab="Principal component", ylab="Cumulative PVE", ylim=c(0,1), type="b")
+
+# NOTA: [...]/4 perché ho quattro componenti
+par(mfrow=c(1,1))
+```
+
+## Clustering gerarchico (hierarchical clustering)
+
+### (generazione di dati casuali riconducibili a tre cluster e plot)
+
+```{r}
+set.seed(25)
+x<-matrix(rnorm(75*2), ncol=2)
+x[1:25,1]<-x[1:25,1]+2
+x[1:25,2]<-x[1:25,2]-2
+x[26:50,1]<-x[26:50,1]+3
+plot(x[1:25,1], x[1:25,2], xlim=c(-2,4.5), ylim=c(-4,2), type="n", xlab="X1", ylab="X2")
+text(x[1:25,1], x[1:25,2])
+text(x[26:50,1], x[26:50,2],labels = seq(26,50,1),col="red")
+text(x[51:75,1], x[51:75,2],labels = seq(51,75,1),col="blue")
+
+```
+
+
+### Generazione clustering gerarchico (agglomerativo, con hclust) e plot dendogramma
+
+```{r}
+# generazione di clustering
+hc.complete<-hclust(
+  dist(x),             # distanze tra le oss. 
+  method="complete"    # criterio di linkage (complete | single | average | centroid)
+  )
+
+# plot del dendogramma
+plot(hc.complete, xlab="", sub="", cex=.9)
+
+# Disegno di una linea ad una certa altezza sul dendogramma (se ad esempio )
+abline(5, 0, lty=2)
+
+# rettangoli per evidenziare i cluster ad un certo lv h, oppure su k
+rect.hclust(hc.complete, k=3, border="red")
+```
+
+### Taglio di un dendogramma (estrazione di una clusterizzazione)
+
+```{r}
+# generazione di clustering
+hc.complete<-hclust(dist(x), method="complete")
+
+# taglio t.c. si abbiano 3 classi
+cutree(hc.complete, k=3)
+
+# taglio ad altezza 5
+cutree(hc.complete, h=5)
+
+# (in questo caso, sono lo stesso taglio)
+
+```
+
+### Plot dei dati clusterizzati in R^2
+
+```{r}
+# generazione di clustering
+hc.complete<-hclust(dist(x), method="complete")
+
+# plot (vuoto) dello spazio
+plot(x[1:75,1], x[1:75,2], xlim=c(-2,4.5), ylim=c(-4,2), type="n", xlab="X1", ylab="X2")
+
+# inserisco i label colorati
+text(x[1:75,1], x[1:75,2], labels = seq(1,75,1), col=cutree(hc.complete, k=3))
+
+```
+
+### [cluster] Utilizzo funzione alternativa (diana)
+
+```{r}
+h1 <- cluster::diana(x)
+cluster::pltree(h1, cex=.8,xlab=" ",sub=" ", main=" ")
+rect.hclust(h1, k=3, border="red")
+cutree(h1, k=3)
+```
+
+
+## Metodi di partizione (K-Means)
+
+### Generazione clustering con k-means (kmeans)
+
+```{r}
+# essendo il processo di selez. casuale, imposto un seed
+set.seed(1234)
+
+km3<-kmeans(
+  x,              # matrice numerica dei dati
+  centers=3,      # numero di centri k, oppure passo direttamente i centri
+  nstart=20       # in caso passo k, quante volte ripeto l'esperimento (mi viene tornato il res migliore)
+)
+
+km3
+
+# estrazione dei centri
+km3$centers 
+
+# estrazione della clusterizzazione
+km3$cluster
+
+```
+
+### Plot dei dati clusterizzati in R^2
+
+```{r}
+# generazione del clustering
+set.seed(1234)
+km3<-kmeans(x, centers=3, nstart=20)
+
+# plot (vuoto) dello spazio
+plot(x[1:75,1], x[1:75,2], xlim=c(-2,4.5), ylim=c(-4,2), type="n", xlab="X1", ylab="X2")
+
+# inserisco i label colorati
+text(x[1:75,1], x[1:75,2], labels = seq(1,75,1), col=km3$cluster)
+
+# inserisco i centri come punti
+points(km3$centers[1,1], km3$centers[1,2], pch=19, col=1, cex=1.5)
+points(km3$centers[2,1], km3$centers[2,2], pch=19, col=2, cex=1.3)
+points(km3$centers[3,1], km3$centers[3,2], pch=19, col=3, cex=1.3)
+
+```
+
+### Partitioning Around Medoids (K-menoids)
+
+```{r}
+# Clusterizzazione con K-menoids
+me3 <- cluster::pam(x, k=3)
+# (nota: x poteva anche essere una matrice delle distanze)
+me3
+
+# indici delle oss. corrispondenti ai medoidi
+me3$id.med
+
+# clusterizzazione
+me3$clustering
+
+# --------------------------------------------
+# plot
+
+# plot (vuoto) dello spazio
+plot(x[1:75,1], x[1:75,2], xlim=c(-2,4.5), ylim=c(-4,2), type="n", xlab="X1", ylab="X2")
+
+# inserisco i label colorati
+text(x[1:75,1], x[1:75,2], labels = seq(1,75,1), col=me3$clustering)
+
+# cerchio i punti medioidi
+for(i in 1:3) {
+  points(x[me3$id.med[i], 1], x[me3$id.med[i], 2], pch=21, cex=3, lwd=2, col=i)
+}
+
+
+```
+
+### Clusterizzazione con K-Means impostando i val. iniziali
+
+```{r}
+swiss.x <- as.matrix(swiss[, -1]) # new data matrix without Fertility
+
+h2 <- hclust(dist(swiss.x), method = "average")
+initial <- tapply(swiss.x, list(rep(cutree(h2,3), ncol(swiss.x)), col(swiss.x)), mean)
+
+dimnames(initial) <- list(NULL, dimnames(swiss.x)[[2]])
+initial
+
+h3<-kmeans(swiss.x,centers=initial)
+h3
+```
+
+### Plot del clustering sulle comp. principali
+
+```{r}
+# effettuazione PCA
+swiss.pca <- prcomp(swiss.x)
+
+# calcolo val. oss. per le varie PC
+swiss.px <- predict(swiss.pca)
+
+# calcolo val. oss. anche per i centri
+swiss.centers <- predict(swiss.pca, h3$centers)
+
+# plot vuoto (sulle prime due PC)
+plot(swiss.px[, 1:2], type = "n", 
+     xlab = "1st principal component", ylab = "2nd principal component")
+
+# inserisco le oss. come punti nel piano delle prime due PC
+text(swiss.px[,1], swiss.px[,2], labels = (1:length(h3$cluster)), col=h3$cluster)
+
+# inserisco anche i centri
+points(swiss.centers[,1], swiss.centers[,2], pch=19, lwd=2, col=(1:3))
+
+```
+
+### Plot del clustering su pairs
+
+(strumento utile a "dare significato" al clustering effettuato)
+
+```{r}
+set.seed(1234)
+h4<-kmeans(swiss.x,3,nstart=20)
+
+pairs(swiss.x, col=h4$cluster)
+# esempio interpretazione: in questo caso, il clustering è fortemente legato 
+# alla percentuale di cattolici, che sembrano influire sul resto
+# (si osservano due chiari gruppi, dove il cluster rosso è sempre quello con 
+# un alto numero di cattolici)
+
+```
+
+
+
+

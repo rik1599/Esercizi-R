@@ -1,0 +1,291 @@
+---
+title: "Strumenti - LM"
+author: "Emanuele Lena - 142411@uniud"
+date: "8/2/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Strumenti per Regressione Lineare
+
+## Creazione di modelli particolari
+
+### Modello con effetto iterazione
+
+[...]
+
+### Modello con formule strane ( I(...) )
+```{r}
+cars1w.lm <- lm(dist ~ speed + I(speed^2),data=datasets::cars)
+```
+
+
+### Modello com stima dei pesata dei minimi quadrati
+
+```{r}
+# utile quando la varianza dei residui dipende da qualche regressore
+# es: nel mod. senza il metodo dei pesi, oss. che i residui aumentano al crescere di speed
+#     => provo a bilanciare in questo modo
+cars2w.lm <- lm(dist ~ speed + I(speed^2),data=datasets::cars,weights=1/speed)
+
+```
+
+## Strumenti di valutazione dei modelli
+
+### Test ANOVA su modelli annidati
+
+```{r}
+leaf.lm1 <- lm(tempDiff ~ 1 , data = DAAG::leaftemp)
+leaf.lm2 <- lm(tempDiff ~ vapPress, data = DAAG::leaftemp)
+leaf.lm3 <- lm(tempDiff ~ CO2level + vapPress, data = DAAG::leaftemp)
+leaf.lm4 <- lm(tempDiff ~ CO2level + vapPress + vapPress:CO2level, data = DAAG::leaftemp)
+
+# conftonto con i paramentri, introducendoli nell'ordine che li ho messi io
+anova(leaf.lm4)
+
+# confronto con i modelli (nell'ordine che indico, purché si rispetti l'annidamento)
+anova(leaf.lm1, leaf.lm2, leaf.lm3, leaf.lm4)
+
+```
+
+```{r}
+# Posso fare ANOVA invertendo l'ordine dei parametri per verificare eventuali collinearità
+# se ho almeno un po' di collinearità mi aspetto risultati (fortemente) diversi
+anova(lm(tempDiff ~ CO2level + vapPress, data = DAAG::leaftemp))
+anova(lm(tempDiff ~ vapPress + CO2level, data = DAAG::leaftemp))
+```
+
+### Log-somiglianza, AIC, BIC
+```{r}
+mod1 <- lm(Volume ~ Girth, data = datasets::trees)
+mod2 <- lm(Volume ~ Girth + Height, data = datasets::trees)
+
+# logsomiglianza (più è grande, meglio è)
+logLik(mod1)
+logLik(mod2)
+
+# AIC e BIC (più piccoli sono, meglio è)
+AIC(mod1, mod2)
+BIC(mod1, mod2)
+
+# NOTA IMPORTANTE: NO CONFRONTI DI MODELLI CON y SU SCALE DIVERSE!!!
+```
+
+
+## Strumenti per migliorare i modelli (selezione scale e regressori)
+
+### Trasformata Boxcox (selezione scala per y)
+
+Utile per selezionare una scala per y
+
+```{r}
+mod <- lm(time ~ climb + dist, data=DAAG::nihills)
+
+# grafico del boxcox
+MASS::boxcox(mod, lambda = seq(0, 2, 0.05))
+
+# calcolo del lambda massimo
+lambdares <- boxcox(mod, lambda = seq(0, 2, 0.05), plotit=F, interp=F)
+max.lambda <- lambdares$x[which.max(lambdares$y)]
+max.lambda 
+
+# trasformazione (automatica) di y
+y <- DAAG::nihills$time
+
+if (max.lambda!=0.0) {
+  yt <- (y^max.lambda-1)/max.lambda
+} else {
+  yt <- log(y)
+}
+
+```
+
+### Indice VIF (Variance Inflation factor)
+
+Utile per individuare variabili soggette a collinearità forte (candidate per la rimozione)
+
+```{r}
+library(compositions)
+data(Coxite)
+coxite <- as.data.frame(Coxite)
+
+# "quanto" una certa variabile è correlata con le altre, 
+# elimino la variabile più correlata
+DAAG::vif(lm(porosity ~ A+B+C+D+depth, data=coxite))
+
+# Interpretazione:
+# VIF > 4-5 <-- è presente della multi-collinearità per questa variabile
+# VIF > 10  <-- alta collinearità
+
+# Alternativa
+car::vif(lm(porosity ~ A+B+C+D+depth, data=coxite))
+
+# NOTA: per non eliminare i parametri più importanti, è suggerito l'uso combinato 
+# con i classici coef. di correlazione (conviene )
+cor(coxite$porosity, coxite[,-7], method = "pearson")
+```
+
+### Scelta regressore da rimuovere (drop1)
+
+Utile per individuare come cambia il modello rimuovendo una certa variabile
+
+```{r}
+
+# criteri scelta rimozione:
+# - test con H1: modello senza questo regressore varia molto
+# - AIC del modello senza regressore
+drop1(lm(dist ~ speed + I(speed^2),data=datasets::cars), test="F", k=2)
+
+# (con k posso "pesare" la complessità del modello nell'AIC)
+
+```
+
+## Strumenti di approfondimento delle diagnostiche
+
+### Plot dei residui parziali 
+
+```{r}
+mod <- lm(time ~ climb + dist, data=DAAG::nihills)
+
+par(mfrow=c(1,2))
+
+# su primo termine, con Standard Error
+termplot(mod, terms=1, partial.resid=TRUE, lwd.term=2,lwd.se=2,pch=20,
+smooth=panel.smooth, col.smth="blue", col.res="gray30", se=T)
+
+# su secondo termine, senza Standard Error
+termplot(mod, terms=2, partial.resid=TRUE, lwd.term=2,lwd.se=2,pch=20,
+smooth=panel.smooth, col.smth="blue", col.res="gray30")
+
+par(mfrow=c(1,1))
+```
+
+### dfbetas (variazioni standardizzate dei coeff rimuovendo le oss.)
+```{r}
+# variazioni STANDARDIZZATE di ciascun coefficente di stima rimuovendo le singole osservazioni
+dfbeta(lm(time ~ climb + dist, data=DAAG::nihills))
+
+
+# influence.measures(...)
+```
+
+## Stime e predizioni 
+
+### Training e test MSE (con cross validation)
+
+Utile per conftontare la capacità predittiva di modelli
+
+```{r}
+roller.glm <- glm(depression ~ weight,data=DAAG::roller)
+
+# training MSE
+# sum(resid(roller.glm)^2)/nrow(DAAG::roller)
+glm.mse.train(roller.glm)
+ 
+# test MSE (con cross validation)
+# boot::cv.glm(DAAG::roller, roller.glm)$delta[2]
+glm.mse.test.cv(roller.glm)
+
+```
+
+### Semplice stima
+
+```{r}
+cars2.lm <- lm(dist ~ speed + I(speed^2),data=cars)
+
+# costruzione di nuovi dati
+dat <- data.frame(speed = 10)
+
+# stima
+predict(cars2.lm, newdata=dat)
+
+# stima con standard error
+predict(cars2.lm, newdata=dat, se=T)
+```
+
+### Intervalli di confidenza e di predizione
+
+```{r}
+
+roller.lm <- lm(depression ~ weight,data=DAAG::roller)
+roller.glm <- glm(depression ~ weight,data=DAAG::roller)
+
+
+# Intervallo di confidenza (intervallo di stima)
+predict(roller.lm, interval="confidence", newdata = data.frame(weight=6))
+ 
+# Intervallo di previsione
+predict(roller.lm, interval="prediction", newdata = data.frame(weight=6))
+
+# Intervallo di previsione (con varianza ricavata con CV)
+predict(roller.lm, interval="prediction", newdata = data.frame(weight=6), pred.var=glm.mse.test.cv(roller.glm))
+
+                   
+```
+
+### Plot di un modello (semplice) con gli intervalli di confidenza e di previsione
+
+```{r}
+# Plot punti
+plot(depression ~ weight, data = DAAG::roller,
+xlim=c(0,1.04*max(weight)),ylim=c(0,1.04*max(depression)),
+xlab = "Weight of roller", ylab = "Depression", pch = 16)
+
+# Plot modello
+roller.lm <- lm(depression ~ weight,data=DAAG::roller)
+abline(roller.lm, col="red", lwd=2)
+
+# v. alternativa per plottare i vall fittati 
+# lines(roller.lm$weight, roller.lm$fit, lwd=2)
+
+xy <- data.frame(weight = seq(1, 13, 1), 20)
+
+# Intervalli confidenza
+yhat <- predict(roller.lm, newdata = xy, interval="confidence")
+ci <- data.frame(lower=yhat[, "lwr"], upper=yhat[, "upr"])
+lines(xy$weight, ci$lower, lty = 2, lwd=2, col="red")
+lines(xy$weight, ci$upper, lty = 2, lwd=2, col="red")
+
+# Intervalli previsione
+yhatob <- predict(roller.lm, newdata = xy, interval="prediction")
+ciob <- data.frame(lower=yhatob[, "lwr"], upper=yhatob[, "upr"])
+lines(xy$weight, ciob$lower, lty = 2, lwd=2)
+lines(xy$weight, ciob$upper, lty = 2, lwd=2)
+```
+
+### [lattice] Plot di modello con 1 reg. numerico e 1 fattore (senza effetto iterazione)
+
+```{r}
+library(lattice)
+
+# modello 
+leaf.lm3 <- lm(tempDiff ~ CO2level + vapPress, data = DAAG::leaftemp)
+
+# ottengo i coefficenti (mi servono per disegnare le rette)
+leaf.lm3$coefficients
+
+plot1 <- xyplot(tempDiff ~ vapPress, DAAG::leaftemp, groups=CO2level, 
+                abline = list(a=2.6849,b=-0.8392,col="blue",lwd=2), # retta gruppo 0 (CO2 basso)
+                key=simpleKey(columns=3,text=c("low","medium","high"),col=c("blue","magenta","darkgreen"),
+                              space="top",points=FALSE,cex=1.2), pch=19, lwd=2)
+
+plot2 <- xyplot(tempDiff ~ vapPress, DAAG::leaftemp, groups=CO2level, 
+                abline = list(a=2.6849+0.3199,b=-0.8392,col="magenta",lwd=2), # retta gruppo 1 (CO2 medio)
+                key=simpleKey(columns=3,text=c("low","medium","high"),col=c("blue","magenta","darkgreen"),
+                              space="top",points=FALSE,cex=1.2), pch=19, lwd=2)
+
+plot3 <- xyplot(tempDiff ~ vapPress, DAAG::leaftemp, groups=CO2level, 
+                abline = list(a=2.6849+0.7931,b=-0.8392,col="darkgreen",lwd=2), # retta gruppo 2 (CO2 alto)
+                key=simpleKey(columns=3,text=c("low","medium","high"),col=c("blue","magenta","darkgreen"),
+                              space="top",points=FALSE,cex=1.2), pch=19, lwd=2)
+
+plot1+plot2+plot3
+
+# Se fosse CON effetto iterazione dovrei disegnare rette di pendenza diversa
+# TODO: res. analogo senza lattice
+```
+
+

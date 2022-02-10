@@ -1,0 +1,282 @@
+---
+title: "Strumenti - EDA"
+author: "Emanuele Lena - 142411@uniud"
+date: "8/2/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Summary
+
+```{r}
+# summary numerico
+summary.num("mpg", data=datasets::mtcars, calcVar = T, calcIndexes = T)
+
+# summary categoriale
+summary.factor("cyl", data=datasets::mtcars, calcRelFreq = T)
+
+
+```
+
+
+## Strumenti classici
+
+### Grafici var numeriche
+
+```{r}
+par(mfrow=c(1,2))
+
+gsummary.num("mpg", data=datasets::mtcars, stats=T, 
+               plots=c("rel", "box"), normCurve=T)
+
+
+par(mfrow=c(2,2))
+for (v in c("disp", "hp", "drat", "wt")) {
+  gsummary.num(v, data=datasets::mtcars)
+}
+par(mfrow=c(1,1))
+
+```
+
+### Normalità var numeriche (norm curve + qqplot)
+
+```{r}
+par(mfrow=c(1,2))
+gsummary.norm("mpg", data=datasets::mtcars, 
+              plots = c("curve", "qq"), 
+              stats=T, statsTest=T)
+par(mfrow=c(1,1))
+```
+
+### Grafici var categoriali
+
+```{r}
+par(mfrow=c(2,2))
+
+for(v in c("jobclass", "health", "maritl", "region")) {
+  gsummary.factor(v, data=ISLR::Wage, plots = c("abs"), pieLabels = F)
+}
+  
+par(mfrow=c(1,1))
+
+gsummary.factor("education", data=ISLR::Wage, stats = T, 
+                pieLabels = T, plots = c("rel", "pie"))
+
+```
+
+### Pairs classico
+
+```{r}
+pairs(datasets::mtcars[c("mpg", "disp", "hp", "drat", "wt")], panel=panel.smooth)
+```
+
+### Matrice di correlazione (e correlazione di ins. di variabili con 1)
+```{r}
+# matrice di correlazione
+cor(datasets::mtcars[c("mpg", "disp", "hp", "drat", "wt")], method = "pearson")
+
+# versione alternatva: correlazione di ins. di variabili con 1 unica risposta
+with(datasets::mtcars, cor(cbind(disp, hp, drat, wt), mpg))
+```
+
+### Correlazione num-num
+
+```{r}
+cor.check.num(x="hp", y="mpg", data=datasets::mtcars, doPlot = T, stats = T, 
+              whichStats = c("pearson", "spearman", "kendal"), 
+              whichTests = c("pearson"))
+```
+
+### Correlazione num-fattore
+
+```{r}
+cor.check.factor.num(xfactor = "tension", y="breaks", data=datasets::warpbreaks, 
+                     doPlot = T, doPlotLines = T, doMeanTest = F, doAnova = T, stats=T)
+```
+
+
+### Correlazione fattore-fattore (mosaic + chisq.test)
+
+```{r}
+cor.check.factor("wool", "tension", data=datasets::warpbreaks, 
+                 stats = T, doPlot = T, doTest = T)
+
+# test chi-quadro
+# chisq.test(datasets::warpbreaks$wool, datasets::warpbreaks$tension)
+
+# tabella di contingenza con val marginali in chiaro
+# epitools::table.margins(table(datasets::warpbreaks$wool, datasets::warpbreaks$tension))
+```
+
+
+## Sintesi e test più avanzati
+
+### Confronto tra medie campionarie per gruppo
+
+```{r}
+ds <- MASS::birthwt
+ds$race <- factor(ds[["race"]], labels=c("white", "black", "other"))
+
+# semplice t-test di confronto tra medie campionarie di due gruppi
+# t.test(ds[ds[["race"]]=="white", "bwt"], ds[ds[["race"]]=="black", "bwt"])
+
+
+# confronto usando la mia funzione
+t.test.between.groups("race", "bwt", ds, type="pairs")
+# t.test.between.groups("race", "bwt", ds, type="base")
+# t.test.between.groups("race", "bwt", ds, type="progressive")
+
+```
+
+
+### Confronto tra medie campionarie di distrib accoppiate
+
+```{r}
+t80 <- c(36,35,36,34,37,40,37,41,38,32,36,39,36,40,37,37,38,40,37,39,
+39,41,38,38,35)
+t81 <- c(39,39,40,33,36,40,37,41,39,34,42,41,42,44,42,42,39,42,41,40,
+43,43,40,39,37)
+
+t.test(t80, t81, paired = T)
+```
+
+
+### Confronto tra medie campionarie di distrib non normali
+
+```{r}
+t80 <- c(36,35,36,34,37,40,37,41,38,32,36,39,36,40,37,37,38,40,37,39,
+39,41,38,38,35)
+t81 <- c(39,39,40,33,36,40,37,41,39,34,42,41,42,44,42,42,39,42,41,40,
+43,43,40,39,37)
+
+wilcox.test(t80, t81)
+```
+
+### Confronto tra proporzioni
+
+```{r}
+217/297
+65/128
+prop.test(c(217,65),c(297,128), correct = FALSE)
+```
+
+### One-way ANOVA
+
+```{r}
+# mod. ANOVA ad una via
+aov.m <- aov(bwt~factor(race), data=MASS::birthwt)
+
+# valutaz. generale del fattore
+summary(aov.m) 
+
+# valutaz. di influenza di ogni livello 
+summary.lm(aov.m) 
+```
+
+### Multi-Way Anova (senza iterazione)
+
+```{r}
+# mod. ANOVA a più vie
+aov.m <- aov(breaks~factor(wool)+factor(tension), data=datasets::warpbreaks)
+
+# valutaz. generale dei fattori
+summary(aov.m) 
+
+```
+
+### Multi-Way Anova (con iterazione)
+
+```{r}
+# mod. ANOVA a più vie, con effetto iterazione
+aov.m <- aov(breaks~factor(wool)*factor(tension), data=datasets::warpbreaks)
+
+# valutaz. generale dei fattori
+summary(aov.m) 
+```
+
+## Grafici avanzati
+
+### [lattice] xyplot con 1 fattore (colore)
+
+```{r}
+lattice::xyplot(income ~ balance, groups=default, data=ISLR::Default, auto.key=list(columns=2))
+```
+
+### [lattice] xyplot con 1 fattore (colore e rette per gruppo)
+
+```{r}
+# esempio di xyplot con punti colorati e tre rette sovrapposte
+lattice::xyplot(tempDiff ~ vapPress, DAAG::leaftemp, groups=CO2level, pch=19, 
+                key=lattice::simpleKey(
+                  columns=3,                               # quanti gruppi 
+                  text=c("low", "medium", "high"),         # quali nomi nella legenda per i gruppi
+                  col=c("blue", "magenta", "darkgreen"),   # quali colori per i gruppi
+                  space="top", points=FALSE, cex=1.2), 
+                type=c("p","r"),lwd=2)
+```
+
+### [lattice] xyplot multiplo con 3 fattori (colore + 2 binari e smooth per gruppo)
+
+```{r}
+tint.xyplot <- lattice::xyplot(csoa ~ it|sex*agegp, groups=tint,
+                data=DAAG::tinting, aspect=1,type=c("p","smooth"), span=1.25)
+
+update(tint.xyplot, legend=NULL, auto.key=list(columns=3, points=TRUE, lines=TRUE))
+```
+
+### [lattice] xyplot di serie temporali (stesso grafico)
+```{r}
+## costruzione di 6 plot sovrapposti
+lattice::xyplot(Ontario+Quebec+BC+Alberta+Prairies+Atlantic ~ Date, data=DAAG::jobs,
+                type="b", outer=FALSE, ylab="Number of workers",
+                auto.key=list(space="right", lines=TRUE))
+```
+
+### [lattice] xyplot di serie temporali (grafici distinti)
+
+```{r}
+# costruzione di 6 plot distinti, uno per ciascuna serie, in scala logaritmica
+lattice::xyplot(Ontario+Quebec+BC+Alberta+Prairies+Atlantic ~ Date, data=DAAG::jobs, 
+                type="b", outer=TRUE, ylab="log(Number of workers)", layout=c(3,2),
+                scales=list(y=list(relation="sliced", log=TRUE)))
+```
+
+### [lattice] stripplot (1 numerico, 2 fattori)
+
+```{r}
+# Metto a fianco due plot (1 x lv di wool)
+lattice::stripplot(breaks ~ tension | wool, datasets::warpbreaks, cex=1.2, pch=16)
+```
+
+### [lattice] splom (equivalente di pairs, con opzione di aggiunta fattore)
+
+```{r}
+# equivalente di pairs, solo che posso aggiungere il gruppo con il colore
+df <- DAAG::allbacks
+lattice::splom(~df[,1:3], groups=cover, data = df, 
+               lwd=2, auto.key = T)
+```
+
+### [lattice] 2 densityplot sovrapposti
+
+(Utile per mostrare due densità della stessa var numerica ma di gruppi diversi)
+
+```{r}
+lattice::densityplot(~log(LOSS), group=ATTORNEY, data=autobi, xlab="log(LOSS)",
+            lwd=2, plot.points=FALSE, auto.key=list(columns=2))
+
+```
+
+### [lattice] one-shot boxplot multiplo con stesse assi y
+
+(Utile per fare in un colpo solo diversi boxplot, anche sulla stessa scala)
+```{r}
+lattice::bwplot(log(LOSS)~ ATTORNEY + CLMSEX + MARITAL + CLMINSUR + SEATBELT + AGECLASS,
+  data=autobi, ylab="log(LOSS)", outer = TRUE, scales = list(x = "free"),
+  xlab="", layout=c(3,2), main="", aspect="fill")
+```
+
