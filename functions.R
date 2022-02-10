@@ -145,10 +145,10 @@ barplot.graph <- function(response.var, esplicative.vars = c(), data) {
   }
 }
 
-logitResponse.modelVerify <- function(lm.object, response.var) {
+logitResponse.modelVerify <- function(glm.object, response.var) {
   plot(
-    lm.object$data[, response.var],
-    lm.object$fitted.values,
+    glm.object$data[, response.var],
+    glm.object$fitted.values,
     pch=19,
     ylim=c(-0.1,1.1),
     xlab=names(lm.object$data)[response.var],
@@ -157,12 +157,12 @@ logitResponse.modelVerify <- function(lm.object, response.var) {
   abline(0,0,col='red',lwd=2)
   abline(1,0,col='red',lwd=2)
   
-  correctness <- lm.object$fitted.values >= 0 && lm.object$fitted.values <= 1
+  correctness <- glm.object$fitted.values >= 0 && glm.object$fitted.values <= 1
   if (correctness) {
     print("Il modello è corretto, tutti i fitted values sono compresi tra 0 e 1")
   } else {
     print("Il modello è errato, ci sono fitted values non compresi tra 0 e 1")
-    print(lm.object$fitted.values[
+    print(glm.object$fitted.values[
       lm.object$fitted.values < 0 | lm.object$fitted.values > 1])
   }
   
@@ -170,16 +170,13 @@ logitResponse.modelVerify <- function(lm.object, response.var) {
   CVbinary(lm.object)
 }
 
-logitResponse.modelVerify.verbose <- function(formula, 
+logitResponse.modelVerify.verbose <- function(glm.object, 
                                               response.var, 
                                               regressors, 
                                               data, 
                                               K=10, B=1,
                                               values=c(1,0),
                                               roc = F) {
-  fstring <- as.character(formula)
-  glm.object <- glm(as.formula(paste(fstring[2], fstring[1], fstring[3])),
-                    family = binomial, data = data)
   pred <- ifelse(predict(glm.object, data, type='response') > 0.5, values[1], values[2])
   cm <- crossval::confusionMatrix(data[, response.var], pred, negative = values[2])
   de <- crossval::diagnosticErrors(cm)
@@ -254,7 +251,8 @@ knn.modelVerify.verbose <- function(formula,
   return(tabe1)
 }
 
-calculateMSE <- function(glm.object, data) {
+calculateMSE <- function(lm.object, data) {
+  glm.object <- glm(lm.object$call$formula, data = data)
   print(paste(
     "Training MSE:", 
     sum(resid(glm.object)^2)/length(data[, 1])

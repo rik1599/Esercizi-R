@@ -122,7 +122,7 @@ with further analyses with particular regard to prediction.
 
 #### Calcolo dell'accuratezza tramite MSE
 ```{r}
-calculateMSE(glm(log(price) ~ log(size) + bed + bath + floor, data=house), house)
+calculateMSE(fit, house)
 ```
 
 ??
